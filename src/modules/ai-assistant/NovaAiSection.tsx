@@ -3,14 +3,7 @@ import {
   AI_PROMPT_PRESETS, 
   AIPromptSuggestion 
 } from '@/data/novaData';
-import { 
-  Cpu, 
-  Sparkles, 
-  Send, 
-  Bot,
-  User,
-  RotateCcw
-} from 'lucide-react';
+import { Icon } from '@iconify/react';
 import { toast } from 'sonner';
 
 interface ChatMessage {
@@ -152,7 +145,7 @@ export const NovaAiSection: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-xs font-semibold text-purple-700 dark:text-purple-400 mb-2.5">
-              <Cpu className="w-3.5 h-3.5" />
+              <Icon icon="solar:cpu-bold" className="w-3.5 h-3.5 text-amber-500" />
               <span>AUTONOMOUS TREASURY COPILOT</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-950 dark:text-white tracking-tight">
@@ -199,7 +192,7 @@ export const NovaAiSection: React.FC = () => {
                     <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded-sm bg-purple-500/10 text-purple-700 dark:text-purple-300">
                       {preset.category}
                     </span>
-                    <Sparkles className="w-3.5 h-3.5 text-purple-500 opacity-60 group-hover:opacity-100 transition-opacity" />
+                    <Icon icon="solar:magic-stick-3-bold" className="w-3.5 h-3.5 text-amber-500 opacity-70 group-hover:opacity-100 transition-opacity" />
                   </div>
                   <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors">
                     {preset.title}
@@ -234,10 +227,10 @@ export const NovaAiSection: React.FC = () => {
                 setMessages([messages[0]]);
                 toast.info('Chat session history reset.');
               }}
-              className="text-slate-500 hover:text-slate-900 dark:hover:text-white p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs flex items-center gap-1 transition-colors"
+              className="text-slate-500 hover:text-slate-900 dark:hover:text-white p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs flex items-center gap-1 transition-colors cursor-pointer"
               title="Reset conversation"
             >
-              <RotateCcw className="w-3 h-3" />
+              <Icon icon="solar:restart-bold" className="w-3 h-3" />
               <span className="hidden sm:inline">Reset</span>
             </button>
           </div>
@@ -250,9 +243,9 @@ export const NovaAiSection: React.FC = () => {
                 className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {msg.sender === 'assistant' && (
-                  <div className="w-7 h-7 rounded-md bg-gradient-to-tr from-purple-500 to-cyan-500 p-[1px] flex-shrink-0 mt-0.5">
+                  <div className="w-7 h-7 rounded-md bg-gradient-to-tr from-amber-500 to-emerald-500 p-[1px] flex-shrink-0 mt-0.5">
                     <div className="w-full h-full bg-slate-900 rounded-[5px] flex items-center justify-center">
-                      <Bot className="w-3.5 h-3.5 text-purple-300" />
+                      <Icon icon="solar:chat-round-dots-bold" className="w-3.5 h-3.5 text-amber-300" />
                     </div>
                   </div>
                 )}
@@ -322,7 +315,7 @@ export const NovaAiSection: React.FC = () => {
 
                 {msg.sender === 'user' && (
                   <div className="w-7 h-7 rounded-md bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <User className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
+                    <Icon icon="solar:user-bold" className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
                   </div>
                 )}
               </div>
@@ -330,8 +323,8 @@ export const NovaAiSection: React.FC = () => {
 
             {isTyping && (
               <div className="flex gap-2.5 items-center text-slate-500 text-xs font-mono">
-                <div className="w-7 h-7 rounded-md bg-purple-500/20 border border-purple-500/40 flex items-center justify-center">
-                  <Bot className="w-3.5 h-3.5 text-purple-600 dark:text-purple-300 animate-pulse" />
+                <div className="w-7 h-7 rounded-md bg-amber-500/20 border border-amber-500/40 flex items-center justify-center">
+                  <Icon icon="solar:chat-round-dots-bold" className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
                 </div>
                 <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-950 px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-800">
                   <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-bounce" />
@@ -360,9 +353,9 @@ export const NovaAiSection: React.FC = () => {
             <button
               type="submit"
               disabled={!customInput.trim() || isTyping}
-              className="p-2 rounded-md bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white transition-all shadow-sm active:scale-95 flex items-center justify-center"
+              className="p-2 rounded-md bg-gradient-to-r from-amber-500 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 disabled:opacity-40 text-white transition-all shadow-sm active:scale-95 flex items-center justify-center cursor-pointer"
             >
-              <Send className="w-3.5 h-3.5" />
+              <Icon icon="solar:plain-bold" className="w-3.5 h-3.5" />
             </button>
           </form>
 

@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  X, 
-  Terminal, 
-  Play, 
-  Copy, 
-  Check, 
-} from 'lucide-react';
+import { Icon } from '@iconify/react';
 import { toast } from 'sonner';
 
 interface SandboxModalProps {
@@ -103,15 +97,15 @@ export const SandboxModal: React.FC<SandboxModalProps> = ({ isOpen, onClose }) =
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-1.5 rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+          className="absolute top-5 right-5 p-1.5 rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
         >
-          <X className="w-4 h-4" />
+          <Icon icon="solar:close-circle-bold" className="w-4 h-4" />
         </button>
 
         {/* Header */}
         <div className="flex items-center gap-3 mb-5">
           <div className="w-9 h-9 rounded-md bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
-            <Terminal className="w-4 h-4" />
+            <Icon icon="solar:code-square-bold" className="w-4 h-4" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-slate-950 dark:text-white flex items-center gap-2">
@@ -227,9 +221,9 @@ export const SandboxModal: React.FC<SandboxModalProps> = ({ isOpen, onClose }) =
           <button
             onClick={handleRunRequest}
             disabled={isRunning}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-md font-bold text-xs text-slate-950 bg-gradient-to-r from-emerald-400 to-cyan-400 hover:from-emerald-300 hover:to-cyan-300 shadow-sm active:scale-95 transition-all disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-md font-bold text-xs text-slate-950 bg-gradient-to-r from-emerald-400 to-cyan-400 hover:from-emerald-300 hover:to-cyan-300 shadow-sm active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
           >
-            <Play className={`w-3.5 h-3.5 fill-current ${isRunning ? 'animate-spin' : ''}`} />
+            <Icon icon="solar:play-bold" className={`w-3.5 h-3.5 fill-current ${isRunning ? 'animate-spin' : ''}`} />
             <span>{isRunning ? 'Executing Consensus Block...' : 'Execute Request'}</span>
           </button>
         </div>
@@ -240,10 +234,10 @@ export const SandboxModal: React.FC<SandboxModalProps> = ({ isOpen, onClose }) =
             <>
               <button
                 onClick={handleCopyResponse}
-                className="absolute top-2.5 right-2.5 p-1 rounded bg-slate-800 text-slate-400 hover:text-white"
+                className="absolute top-2.5 right-2.5 p-1 rounded bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
                 title="Copy JSON"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? <Icon icon="solar:check-circle-bold" className="w-3.5 h-3.5 text-emerald-400" /> : <Icon icon="solar:copy-bold" className="w-3.5 h-3.5" />}
               </button>
               <pre className="text-emerald-400 leading-relaxed whitespace-pre-wrap">
                 {JSON.stringify(responseOutput, null, 2)}
@@ -251,7 +245,7 @@ export const SandboxModal: React.FC<SandboxModalProps> = ({ isOpen, onClose }) =
             </>
           ) : (
             <div className="h-full min-h-[150px] flex flex-col items-center justify-center text-slate-500 text-center">
-              <Terminal className="w-7 h-7 mb-1.5 opacity-40" />
+              <Icon icon="solar:code-square-bold" className="w-7 h-7 mb-1.5 opacity-40" />
               <span>Ready. Click "Execute Request" to dispatch payload to simulated NOVA consensus layer.</span>
             </div>
           )}

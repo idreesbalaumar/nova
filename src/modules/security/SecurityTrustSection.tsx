@@ -3,17 +3,7 @@ import {
   SECURITY_SPECS, 
   AUDIT_LOG_STREAM 
 } from '@/data/novaData';
-import { 
-  ShieldCheck, 
-  Lock, 
-  Landmark, 
-  Cpu, 
-  CheckCircle2, 
-  Key, 
-  FileCheck, 
-  RefreshCw, 
-  Fingerprint
-} from 'lucide-react';
+import { Icon } from '@iconify/react';
 import { toast } from 'sonner';
 
 export const SecurityTrustSection: React.FC = () => {
@@ -60,7 +50,7 @@ export const SecurityTrustSection: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs font-semibold text-amber-700 dark:text-amber-400 mb-2.5">
-              <ShieldCheck className="w-3.5 h-3.5" />
+              <Icon icon="solar:shield-check-bold" className="w-3.5 h-3.5" />
               <span>INSTITUTIONAL TRUST & CRYPTOGRAPHIC ASSURANCE</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-950 dark:text-white tracking-tight">
@@ -72,7 +62,7 @@ export const SecurityTrustSection: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 text-xs font-mono text-emerald-700 dark:text-emerald-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-md self-start md:self-auto shadow-sm">
-            <CheckCircle2 className="w-3.5 h-3.5" />
+            <Icon icon="solar:check-circle-bold" className="w-3.5 h-3.5 text-emerald-500" />
             <span>ISO 27001 • SOC 2 TYPE II • CBN COMPLIANT</span>
           </div>
         </div>
@@ -82,7 +72,7 @@ export const SecurityTrustSection: React.FC = () => {
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 pb-5 border-b border-slate-200 dark:border-slate-800">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <Key className="w-4 h-4 text-amber-500" />
+                <Icon icon="solar:key-bold" className="w-4 h-4 text-amber-500" />
                 <h3 className="text-base font-bold text-slate-950 dark:text-white">
                   Multi-Party Computation (MPC) 3-of-5 Custody Visualizer
                 </h3>
@@ -95,9 +85,9 @@ export const SecurityTrustSection: React.FC = () => {
             <button
               onClick={handleSimulateMpcSign}
               disabled={isSigning}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-md font-bold text-xs text-slate-950 bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 shadow-sm active:scale-95 transition-all disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md font-bold text-xs text-slate-950 bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 shadow-sm active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isSigning ? 'animate-spin' : ''}`} />
+              <Icon icon="solar:restart-bold" className={`w-3.5 h-3.5 ${isSigning ? 'animate-spin' : ''}`} />
               <span>{isSigning ? 'Synthesizing Quorum...' : 'Simulate 3-of-5 MPC Quorum'}</span>
             </button>
           </div>
@@ -120,7 +110,7 @@ export const SecurityTrustSection: React.FC = () => {
                     <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-sm bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                       Shard #{shard.id}
                     </span>
-                    <Fingerprint className={`w-3.5 h-3.5 ${isParticipating ? 'text-amber-500' : 'text-slate-400'}`} />
+                    <Icon icon="solar:scanner-bold" className={`w-3.5 h-3.5 ${isParticipating ? 'text-amber-500' : 'text-slate-400'}`} />
                   </div>
 
                   <h4 className="text-xs font-bold text-slate-900 dark:text-white mb-0.5">{shard.name}</h4>
@@ -146,7 +136,7 @@ export const SecurityTrustSection: React.FC = () => {
               </span>
             </div>
             <div className="text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" />
+              <Icon icon="solar:check-circle-bold" className="w-3.5 h-3.5 text-emerald-500" />
               <span>Byzantine Fault Resilient • Quantum-Resistant Curve</span>
             </div>
           </div>
@@ -162,10 +152,10 @@ export const SecurityTrustSection: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="w-9 h-9 rounded-md bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                    {idx === 0 && <ShieldCheck className="w-4 h-4" />}
-                    {idx === 1 && <Lock className="w-4 h-4" />}
-                    {idx === 2 && <Landmark className="w-4 h-4" />}
-                    {idx === 3 && <Cpu className="w-4 h-4" />}
+                    {idx === 0 && <Icon icon="solar:shield-check-bold" className="w-4 h-4" />}
+                    {idx === 1 && <Icon icon="solar:lock-bold" className="w-4 h-4" />}
+                    {idx === 2 && <Icon icon="solar:banknotes-bold" className="w-4 h-4" />}
+                    {idx === 3 && <Icon icon="solar:cpu-bold" className="w-4 h-4" />}
                   </div>
                   <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-sm bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                     {spec.badge}
@@ -192,7 +182,7 @@ export const SecurityTrustSection: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
             <div>
               <h3 className="text-sm font-bold text-slate-950 dark:text-white flex items-center gap-2">
-                <FileCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <Icon icon="solar:document-text-bold" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 Live Cryptographic Merkle Audit Stream
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">

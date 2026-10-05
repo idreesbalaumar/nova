@@ -1,16 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Activity, 
-  Layers, 
-  Cpu, 
-  ShieldCheck, 
-  Terminal, 
-  Moon, 
-  Sun, 
-  Menu, 
-  X,
-  ChevronRight
-} from 'lucide-react';
+import { Icon } from '@iconify/react';
 import { Logo } from './Logo';
 
 interface NavbarProps {
@@ -68,18 +57,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSandbox }) => {
   };
 
   const navItems = [
-    { name: 'Home', path: '#home', id: 'home', icon: Activity },
-    { name: 'Network Map', path: '#network', id: 'network', icon: Activity },
-    { name: 'Treasury OS', path: '#intelligence', id: 'intelligence', icon: Layers },
-    { name: 'NOVA AI', path: '#ai-assistant', id: 'ai-assistant', icon: Cpu },
-    { name: 'Security & Trust', path: '#security', id: 'security', icon: ShieldCheck },
+    { name: 'Home', path: '#home', id: 'home', icon: 'solar:home-2-bold' },
+    { name: 'Network Map', path: '#network', id: 'network', icon: 'solar:global-bold' },
+    { name: 'Treasury OS', path: '#intelligence', id: 'intelligence', icon: 'solar:wallet-money-bold' },
+    { name: 'NOVA AI', path: '#ai-assistant', id: 'ai-assistant', icon: 'solar:magic-stick-3-bold' },
+    { name: 'Security & Trust', path: '#security', id: 'security', icon: 'solar:shield-check-bold' },
   ];
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/95 dark:bg-[#060A12]/95 backdrop-blur-md border-b border-slate-200 dark:border-white/10 shadow-sm py-2.5'
+          ? 'bg-[#FFFDF9]/95 dark:bg-[#060A12]/95 backdrop-blur-md border-b border-amber-500/20 dark:border-white/10 shadow-sm py-2.5'
           : 'bg-transparent py-4'
       }`}
     >
@@ -98,20 +87,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSandbox }) => {
           </div>
 
           {/* Center Links with subtle active pill */}
-          <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-md bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
+          <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-md bg-[#F5EFE6]/70 dark:bg-slate-900/80 border border-amber-500/20 dark:border-slate-800">
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
               return (
                 <a
                   key={item.id}
                   href={item.path}
-                  className={`px-3 py-1.5 rounded-sm text-xs font-semibold transition-all duration-150 ${
+                  className={`px-3 py-1.5 rounded-sm text-xs font-semibold transition-all duration-150 flex items-center gap-1.5 ${
                     isActive
-                      ? 'bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
+                      ? 'bg-white dark:bg-slate-800 text-amber-700 dark:text-amber-400 shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-amber-800 dark:hover:text-white'
                   }`}
                 >
-                  {item.name}
+                  <Icon icon={item.icon} className="w-3.5 h-3.5" />
+                  <span>{item.name}</span>
                 </a>
               );
             })}
@@ -120,7 +110,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSandbox }) => {
           {/* Right Action Bar */}
           <div className="hidden lg:flex items-center gap-2.5">
             {/* Live Operational Status */}
-            <div className="flex items-center gap-2 px-2.5 py-1 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs shadow-xs">
+            <div className="flex items-center gap-2 px-2.5 py-1 rounded-md bg-white dark:bg-slate-900 border border-amber-500/20 dark:border-slate-800 text-xs shadow-xs">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -130,57 +120,69 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSandbox }) => {
               </span>
             </div>
 
-            {/* Theme Toggle */}
+            {/* Theme Toggle with Iconify */}
             <button
               onClick={toggleTheme}
               aria-label="Toggle light/dark theme"
-              className="p-1.5 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-400 dark:hover:border-slate-600 transition-colors shadow-xs"
+              className="p-1.5 rounded-md bg-white dark:bg-slate-900 border border-amber-500/20 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-amber-400 dark:hover:border-slate-600 transition-colors shadow-xs cursor-pointer"
               title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
-              {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
+              {isDark ? (
+                <Icon icon="solar:sun-bold" className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Icon icon="solar:moon-bold" className="w-4 h-4 text-amber-700" />
+              )}
             </button>
 
-            {/* Sandbox CTA */}
+            {/* Sandbox CTA with Iconify */}
             <button
               onClick={onOpenSandbox}
-              className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-sm transition-all duration-200 active:scale-95"
+              className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
             >
-              <Terminal className="w-3.5 h-3.5" />
+              <Icon icon="solar:code-square-bold" className="w-3.5 h-3.5" />
               <span>Sandbox Console</span>
-              <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+              <Icon icon="solar:alt-arrow-right-linear" className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>
 
-          {/* Mobile hamburger */}
+          {/* Mobile hamburger with Iconify */}
           <div className="flex items-center gap-2 lg:hidden">
             <button
               onClick={toggleTheme}
               aria-label="Toggle theme"
-              className="p-1.5 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300"
+              className="p-1.5 rounded-md bg-white dark:bg-slate-900 border border-amber-500/20 dark:border-slate-800 text-slate-700 dark:text-slate-300"
             >
-              {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
+              {isDark ? (
+                <Icon icon="solar:sun-bold" className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Icon icon="solar:moon-bold" className="w-4 h-4 text-amber-700" />
+              )}
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200"
+              className="p-1.5 rounded-md bg-white dark:bg-slate-900 border border-amber-500/20 dark:border-slate-800 text-slate-700 dark:text-slate-200"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? (
+                <Icon icon="solar:close-circle-linear" className="w-5 h-5 text-amber-600" />
+              ) : (
+                <Icon icon="solar:hamburger-menu-linear" className="w-5 h-5" />
+              )}
             </button>
           </div>
         </div>
 
-        {/* Mobile Dropdown */}
+        {/* Mobile Dropdown with Iconify */}
         {mobileMenuOpen && (
-          <div className="lg:hidden mt-3 p-3.5 rounded-lg bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 backdrop-blur-2xl flex flex-col gap-1.5 shadow-xl animate-fade-in">
+          <div className="lg:hidden mt-3 p-3.5 rounded-lg bg-white/95 dark:bg-slate-900/95 border border-amber-500/20 dark:border-slate-800 backdrop-blur-2xl flex flex-col gap-1.5 shadow-xl animate-fade-in">
             {navItems.map((item) => (
               <a 
                 key={item.id}
                 href={item.path} 
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-md text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2"
+                className="px-3 py-2 rounded-md text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-amber-50 dark:hover:bg-slate-800 flex items-center gap-2"
               >
-                <item.icon className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                {item.name}
+                <Icon icon={item.icon} className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                <span>{item.name}</span>
               </a>
             ))}
             <button
@@ -188,10 +190,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSandbox }) => {
                 setMobileMenuOpen(false);
                 onOpenSandbox();
               }}
-              className="mt-2 w-full py-2.5 rounded-md text-center text-xs font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 shadow-sm flex items-center justify-center gap-1.5"
+              className="mt-2 w-full py-2.5 rounded-md text-center text-xs font-semibold text-white bg-gradient-to-r from-amber-500 to-emerald-600 shadow-sm flex items-center justify-center gap-1.5"
             >
-              <Terminal className="w-3.5 h-3.5" />
-              Launch Developer Sandbox
+              <Icon icon="solar:code-square-bold" className="w-3.5 h-3.5" />
+              <span>Launch Developer Sandbox</span>
             </button>
           </div>
         )}

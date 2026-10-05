@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Loader2, X, Play, ArrowRight, CheckCircle2, ShieldCheck, Zap } from "lucide-react";
+import { Icon } from "@iconify/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/modules/shared/utils/cn";
+import { KenteRibbon } from "../shared/components/KentePattern";
 
 interface HeroVideoModalProps {
   open: boolean;
@@ -13,7 +14,7 @@ interface HeroVideoModalProps {
 export const HeroVideoModal: React.FC<HeroVideoModalProps> = ({
   open,
   onOpenChange,
-  videoId = "1EiE4w2GsnQ",
+  videoId = "pQpFebyALV0",
   onOpenSandbox,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -61,7 +62,7 @@ export const HeroVideoModal: React.FC<HeroVideoModalProps> = ({
   return (
     <AnimatePresence>
       <div 
-        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 md:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 md:p-6 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
         onClick={() => onOpenChange(false)}
       >
         <motion.div
@@ -72,39 +73,39 @@ export const HeroVideoModal: React.FC<HeroVideoModalProps> = ({
           className="relative max-w-4xl w-[94vw] sm:w-[90vw] md:w-[85vw] p-0 border-0 bg-transparent shadow-none overflow-visible"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Floating Close Button Outside Modal at Top-Right (CarePortal signature) */}
+          {/* Floating Close Button Outside Modal at Top-Right (CarePortal signature) with Iconify */}
           <button
             type="button"
             onClick={() => onOpenChange(false)}
             className={cn(
               "absolute -top-11 sm:-top-9 md:-top-7 right-0 sm:-right-4 md:-right-7 lg:-right-9 z-50",
               "flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full",
-              "text-white/80 hover:text-white bg-black/60 hover:bg-black/85 active:bg-black",
-              "backdrop-blur-md border border-white/20 hover:border-white/40 shadow-xl",
+              "text-white/80 hover:text-white bg-black/70 hover:bg-black/90 active:bg-black",
+              "backdrop-blur-md border border-amber-400/30 hover:border-amber-400 shadow-xl",
               "transition-all duration-200 cursor-pointer group"
             )}
             aria-label="Close video"
           >
-            <X className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
+            <Icon icon="solar:close-circle-bold" className="w-4 h-4 text-amber-400 transition-transform duration-200 group-hover:scale-110" />
           </button>
 
           {/* Top Switcher: Video Tour vs Interactive Demo */}
           <div className="flex items-center justify-between mb-3 px-1">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs sm:text-sm font-semibold text-white/90">
-                NOVA in Action • Experience Instant Settlement
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-xs sm:text-sm font-semibold text-white/95">
+                NOVA in Action • Real-Time African Settlement
               </span>
             </div>
             
-            <div className="inline-flex p-0.5 rounded-full bg-black/50 border border-white/15 backdrop-blur-md text-xs">
+            <div className="inline-flex p-0.5 rounded-full bg-black/60 border border-amber-400/25 backdrop-blur-md text-xs">
               <button
                 type="button"
                 onClick={() => setActiveTab("video")}
                 className={cn(
                   "px-3 py-1 rounded-full font-medium transition-all duration-200",
                   activeTab === "video"
-                    ? "bg-emerald-600 text-white shadow-xs"
+                    ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs font-semibold"
                     : "text-white/70 hover:text-white"
                 )}
               >
@@ -116,7 +117,7 @@ export const HeroVideoModal: React.FC<HeroVideoModalProps> = ({
                 className={cn(
                   "px-3 py-1 rounded-full font-medium transition-all duration-200",
                   activeTab === "interactive"
-                    ? "bg-emerald-600 text-white shadow-xs"
+                    ? "bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-xs font-semibold"
                     : "text-white/70 hover:text-white"
                 )}
               >
@@ -126,14 +127,20 @@ export const HeroVideoModal: React.FC<HeroVideoModalProps> = ({
           </div>
 
           {/* Main Modal Container */}
-          <div className="relative w-full aspect-video bg-black/95 overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl border border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)]">
+          <div className="relative w-full aspect-video bg-black/95 overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl border border-amber-400/30 shadow-[0_25px_60px_-15px_rgba(217,119,6,0.35)]">
+            
+            {/* Subtle Kente Ribbon Top Accent */}
+            <div className="absolute top-0 inset-x-0 z-30">
+              <KenteRibbon height={3} />
+            </div>
+
             {activeTab === "video" ? (
               <>
                 {/* Centered Loading Spinner */}
                 {isLoading && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gray-950 z-20">
-                    <Loader2 className="w-10 h-10 text-emerald-500 animate-spin" />
-                    <span className="text-xs font-medium text-gray-400 tracking-wider">
+                    <Icon icon="solar:spinner-line-duotone" className="w-10 h-10 text-amber-500 animate-spin" />
+                    <span className="text-xs font-medium text-amber-200/80 tracking-wider">
                       Loading presentation...
                     </span>
                   </div>
@@ -154,23 +161,23 @@ export const HeroVideoModal: React.FC<HeroVideoModalProps> = ({
               </>
             ) : (
               /* Interactive Transfer Walkthrough (Non-technical & User-Friendly) */
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-[#060D1A] to-slate-900 p-4 sm:p-6 md:p-8 flex flex-col justify-between text-white overflow-y-auto">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#0B0F17] via-[#101522] to-[#0A0D15] p-4 sm:p-6 md:p-8 flex flex-col justify-between text-white overflow-y-auto">
                 <div>
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3 mb-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-400/20 pb-3 mb-4">
                     <div>
                       <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
                         <span>Send Money in Real-Time</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
                           Instant Bank Deposit
                         </span>
                       </h3>
                       <p className="text-xs text-gray-400">
-                        See how easy it is to pay suppliers, partners, and teams across borders.
+                        See how easily African businesses pay suppliers, teams, and partners across borders.
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-1.5 text-xs text-gray-300 bg-white/5 px-2.5 py-1 rounded-md border border-white/10">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    <div className="flex items-center gap-1.5 text-xs text-amber-200 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/30">
+                      <Icon icon="solar:shield-check-bold" className="w-3.5 h-3.5 text-emerald-400" />
                       <span>Bank-Grade Security</span>
                     </div>
                   </div>
@@ -178,11 +185,11 @@ export const HeroVideoModal: React.FC<HeroVideoModalProps> = ({
                   {/* Transfer Form Box */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-2xl mx-auto my-auto">
                     {/* You Send */}
-                    <div className="p-3 sm:p-4 rounded-xl bg-white/5 border border-white/10">
+                    <div className="p-3.5 sm:p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-400/40 transition-colors">
                       <span className="text-[11px] text-gray-400 font-medium block mb-1">You Send</span>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-lg font-bold">£</span>
+                          <span className="text-lg font-bold text-amber-400">£</span>
                           <input
                             type="number"
                             value={demoAmount}
@@ -190,30 +197,32 @@ export const HeroVideoModal: React.FC<HeroVideoModalProps> = ({
                             className="bg-transparent text-xl sm:text-2xl font-bold w-28 text-white focus:outline-none"
                           />
                         </div>
-                        <span className="px-2 py-1 rounded bg-white/10 text-xs font-semibold">
-                          🇬🇧 GBP
+                        <span className="px-2.5 py-1 rounded bg-white/10 text-xs font-semibold flex items-center gap-1">
+                          <span>🇬🇧</span>
+                          <span>GBP</span>
                         </span>
                       </div>
                     </div>
 
                     {/* Recipient Gets */}
-                    <div className="p-3 sm:p-4 rounded-xl bg-white/5 border border-white/10">
+                    <div className="p-3.5 sm:p-4 rounded-xl bg-white/5 border border-white/10 hover:border-emerald-400/40 transition-colors">
                       <span className="text-[11px] text-gray-400 font-medium block mb-1">Recipient Gets</span>
                       <div className="flex items-center justify-between">
                         <span className="text-xl sm:text-2xl font-bold text-emerald-400">
                           ₦{(demoAmount * 1940).toLocaleString()}
                         </span>
-                        <span className="px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 text-xs font-semibold">
-                          🇳🇬 NGN
+                        <span className="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 text-xs font-semibold flex items-center gap-1">
+                          <span>🇳🇬</span>
+                          <span>NGN</span>
                         </span>
                       </div>
                     </div>
                   </div>
 
                   {/* Pricing Breakdown */}
-                  <div className="max-w-2xl mx-auto mt-3 p-3 rounded-lg bg-emerald-950/20 border border-emerald-500/20 text-xs flex flex-wrap items-center justify-between gap-2">
+                  <div className="max-w-2xl mx-auto mt-3 p-3 rounded-lg bg-amber-950/20 border border-amber-500/25 text-xs flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                      <Icon icon="solar:bolt-bold" className="w-3.5 h-3.5 text-amber-400" />
                       <span className="text-gray-300">Exchange Rate: <strong>1 GBP = 1,940 NGN</strong> (Real Market Rate)</span>
                     </div>
                     <div className="text-emerald-400 font-medium">
@@ -227,21 +236,22 @@ export const HeroVideoModal: React.FC<HeroVideoModalProps> = ({
                   {demoStatus === "ready" && (
                     <>
                       <span className="text-xs text-gray-400">
-                        Try the test simulation right now.
+                        Try the instant simulation right now.
                       </span>
                       <button
                         type="button"
                         onClick={handleSimulateTransfer}
-                        className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-all shadow-md active:scale-95"
+                        className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold text-xs transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5"
                       >
-                        Send Test Payment
+                        <span>Send Test Payment</span>
+                        <Icon icon="solar:arrow-right-linear" className="w-3.5 h-3.5" />
                       </button>
                     </>
                   )}
 
                   {demoStatus === "processing" && (
                     <div className="w-full py-2 flex items-center justify-center gap-2 text-xs text-emerald-400 font-medium">
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Icon icon="solar:spinner-line-duotone" className="w-4 h-4 animate-spin text-emerald-400" />
                       <span>Sending funds directly into Lagos bank account...</span>
                     </div>
                   )}
@@ -249,7 +259,7 @@ export const HeroVideoModal: React.FC<HeroVideoModalProps> = ({
                   {demoStatus === "delivered" && (
                     <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-2">
                       <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold">
-                        <CheckCircle2 className="w-4 h-4" />
+                        <Icon icon="solar:check-circle-bold" className="w-4 h-4" />
                         <span>Payment Delivered! Recipient notified in 380ms.</span>
                       </div>
                       <button
@@ -258,9 +268,10 @@ export const HeroVideoModal: React.FC<HeroVideoModalProps> = ({
                           onOpenChange(false);
                           if (onOpenSandbox) onOpenSandbox();
                         }}
-                        className="px-5 py-2 rounded-full bg-white text-gray-900 font-semibold text-xs hover:bg-gray-100 transition-colors"
+                        className="px-5 py-2 rounded-full bg-white text-gray-900 font-semibold text-xs hover:bg-amber-50 transition-colors flex items-center gap-1.5"
                       >
-                        Open Full Live Account
+                        <span>Open Full Live Account</span>
+                        <Icon icon="solar:arrow-right-linear" className="w-3 h-3" />
                       </button>
                     </div>
                   )}

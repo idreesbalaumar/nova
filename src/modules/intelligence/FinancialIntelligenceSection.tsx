@@ -14,14 +14,7 @@ import {
   YAxis, 
   Tooltip, 
 } from 'recharts';
-import { 
-  Wallet, 
-  TrendingUp, 
-  ArrowUpDown, 
-  Search, 
-  Layers,
-  FileSpreadsheet
-} from 'lucide-react';
+import { Icon } from '@iconify/react';
 import { toast } from 'sonner';
 
 interface FinancialIntelligenceSectionProps {
@@ -112,9 +105,9 @@ export const FinancialIntelligenceSection: React.FC<FinancialIntelligenceSection
           <div className="flex items-center gap-3">
             <button
               onClick={handleExportCSV}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 hover:border-slate-400 transition-all shadow-sm active:scale-95"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 hover:border-amber-400 transition-all shadow-sm active:scale-95 cursor-pointer"
             >
-              <FileSpreadsheet className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <Icon icon="solar:document-text-bold" className="w-4 h-4 text-amber-500" />
               <span>Export Audit Ledger</span>
             </button>
           </div>
@@ -210,7 +203,7 @@ export const FinancialIntelligenceSection: React.FC<FinancialIntelligenceSection
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
               <div>
                 <h3 className="text-sm font-bold text-slate-950 dark:text-white flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <Icon icon="solar:chart-2-bold" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   Corridor Settlement Volume ($M)
                 </h3>
                 <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -301,7 +294,7 @@ export const FinancialIntelligenceSection: React.FC<FinancialIntelligenceSection
             <div>
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold text-slate-950 dark:text-white flex items-center gap-2">
-                  <ArrowUpDown className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <Icon icon="solar:transfer-horizontal-bold" className="w-4 h-4 text-amber-500" />
                   Instant FX Corridor Engine
                 </h3>
                 <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-sm bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30">
@@ -347,9 +340,9 @@ export const FinancialIntelligenceSection: React.FC<FinancialIntelligenceSection
                     setSourceCurr(targetCurr);
                     setTargetCurr(temp);
                   }}
-                  className="w-7 h-7 rounded-md bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:border-emerald-500 transition-colors shadow-sm"
+                  className="w-7 h-7 rounded-md bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:border-amber-500 transition-colors shadow-sm cursor-pointer"
                 >
-                  <ArrowUpDown className="w-3.5 h-3.5" />
+                  <Icon icon="solar:transfer-horizontal-bold" className="w-3.5 h-3.5 text-amber-500" />
                 </button>
               </div>
 
@@ -420,7 +413,7 @@ export const FinancialIntelligenceSection: React.FC<FinancialIntelligenceSection
             {/* Search & Filter Bar */}
             <div className="flex flex-wrap items-center gap-2.5">
               <div className="relative">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                <Icon icon="solar:magnifer-linear" className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Filter by counterparty or city..."

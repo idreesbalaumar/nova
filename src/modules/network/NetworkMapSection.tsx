@@ -5,12 +5,7 @@ import {
   NetworkNode, 
   Transaction 
 } from '@/data/novaData';
-import { 
-  Radio, 
-  Cpu, 
-  ArrowUpRight, 
-  Filter
-} from 'lucide-react';
+import { Icon } from '@iconify/react';
 
 interface NetworkMapSectionProps {
   onSelectTransaction: (tx: Transaction) => void;
@@ -70,7 +65,7 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-2.5">
-              <Radio className="w-3.5 h-3.5 animate-pulse" />
+              <Icon icon="solar:radar-bold" className="w-3.5 h-3.5 animate-pulse text-amber-500" />
               <span>GLOBAL TO PAN-AFRICAN MESH</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-950 dark:text-white tracking-tight">
@@ -84,7 +79,7 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
           {/* Filter Corridor Switcher */}
           <div className="flex items-center gap-1.5 p-1 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 self-start md:self-auto shadow-sm">
             <span className="text-[11px] text-slate-500 font-medium px-2 flex items-center gap-1">
-              <Filter className="w-3 h-3" /> Rail:
+              <Icon icon="solar:filter-bold" className="w-3 h-3 text-amber-500" /> Rail:
             </span>
             <button
               onClick={() => setFilterMode('all')}
@@ -290,7 +285,7 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
             {/* Bottom Corridors Quick Stats */}
             <div className="pt-3.5 border-t border-slate-200 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
               <div className="flex items-center gap-2">
-                <Cpu className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <Icon icon="solar:cpu-bold" className="w-3.5 h-3.5 text-amber-500" />
                 <span>Consensus Engine: <strong className="text-slate-800 dark:text-white">BFT PoS Rail v2.4</strong></span>
               </div>
               <div className="flex items-center gap-4">
@@ -433,7 +428,7 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
                     </td>
                     <td className="py-2.5 text-right text-cyan-600 dark:text-cyan-400 group-hover:underline flex items-center justify-end gap-1">
                       <span>{tx.hash}</span>
-                      <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <Icon icon="solar:arrow-right-up-linear" className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-amber-500" />
                     </td>
                   </tr>
                 ))}
