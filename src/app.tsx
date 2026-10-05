@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/modules/shared/components/Navbar';
 import { HeroSection } from '@/modules/hero/HeroSection';
 import { NetworkMapSection } from '@/modules/network/NetworkMapSection';
@@ -9,12 +9,22 @@ import { FinalCtaSection } from '@/modules/cta/FinalCtaSection';
 import { Footer } from '@/modules/shared/components/Footer';
 import { ReceiptModal } from '@/modules/shared/components/ReceiptModal';
 import { SandboxModal } from '@/modules/shared/components/SandboxModal';
+import { RouteSpinner } from '@/modules/shared/components/RouteSpinner';
 import { Transaction } from '@/data/novaData';
 import { Toaster } from 'sonner';
 
 export default function App() {
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isSandboxOpen, setIsSandboxOpen] = useState<boolean>(false);
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
+
+  // Initial simulated route hydration matching CarePortal
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 900);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleExploreNetwork = () => {
     const el = document.getElementById('network');
@@ -22,6 +32,10 @@ export default function App() {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  if (isInitialLoading) {
+    return <RouteSpinner fullScreen={true} />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#060A12] dark:text-slate-100 flex flex-col font-sans selection:bg-emerald-500/20 selection:text-emerald-700 dark:selection:text-emerald-300 transition-colors duration-200">

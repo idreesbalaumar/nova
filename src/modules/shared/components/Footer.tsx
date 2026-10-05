@@ -1,27 +1,24 @@
 import React from 'react';
+import { Logo } from './Logo';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-slate-100 dark:bg-[#03060C] text-slate-600 dark:text-slate-400 border-t border-slate-200 dark:border-slate-900 py-14 text-xs transition-colors">
+    <footer className="bg-slate-100 dark:bg-[#03060C] text-slate-600 dark:text-slate-400 border-t border-slate-200 dark:border-slate-900 py-12 text-xs transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 pb-10 border-b border-slate-200 dark:border-slate-900">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 pb-8 border-b border-slate-200 dark:border-slate-900">
           
           {/* Brand Info (2 cols) */}
-          <div className="md:col-span-2 space-y-3.5">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-md bg-gradient-to-tr from-emerald-500 to-cyan-400 p-[1.5px]">
-                <div className="w-full h-full bg-slate-900 rounded-[4px] flex items-center justify-center font-black text-white text-sm">
-                  N
-                </div>
-              </div>
-              <span className="font-extrabold text-base text-slate-950 dark:text-white tracking-tight">
-                NOVA <span className="text-emerald-600 dark:text-emerald-400 font-normal text-xs ml-1">OS</span>
-              </span>
-            </div>
+          <div className="md:col-span-2 space-y-3">
+            <Logo 
+              variant="full" 
+              size="md" 
+              subtitle="Africa's Financial Operating System" 
+              href="#home"
+            />
 
-            <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed max-w-sm">
+            <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed max-w-sm mt-2">
               Africa’s financial operating system. A unified monetary infrastructure enabling sub-second cross-border settlement, multi-currency liquidity rails, and AI-driven treasury operations.
             </p>
 
@@ -37,7 +34,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Column 1: Financial Network */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             <h4 className="font-bold text-slate-950 dark:text-white uppercase tracking-wider font-mono text-[11px]">
               Financial Network
             </h4>
@@ -76,7 +73,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Column 2: Platform & OS */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             <h4 className="font-bold text-slate-950 dark:text-white uppercase tracking-wider font-mono text-[11px]">
               Platform Rails
             </h4>
@@ -90,7 +87,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Column 3: Trust & Regulatory */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             <h4 className="font-bold text-slate-950 dark:text-white uppercase tracking-wider font-mono text-[11px]">
               Compliance & Specs
             </h4>
@@ -130,3 +127,5 @@ export const Footer: React.FC = () => {
     </footer>
   );
 };
+
+export default Footer;
