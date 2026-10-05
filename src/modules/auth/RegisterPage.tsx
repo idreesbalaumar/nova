@@ -4,6 +4,13 @@ import { Icon } from '@iconify/react';
 import { Logo } from '@/modules/shared/components/Logo';
 import { Alert } from '@/modules/shared/components/Alert';
 import { cn } from '@/modules/shared/utils/cn';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import heroRight from '@/assets/hero_right.jpg';
 
 interface RegisterPageProps {
@@ -35,6 +42,14 @@ const VOLUME_TIERS = [
   '$50,000 – $250,000 / month',
   '$250,000 – $1,000,000 / month',
   '$1,000,000+ / month (Enterprise Priority)',
+];
+
+const ADMIN_ROLES = [
+  'Head of Global Treasury',
+  'Chief Financial Officer (CFO)',
+  'Lead Settlement & Liquidity Manager',
+  'Director of Payments Operations',
+  'Compliance & Regulatory Officer',
 ];
 
 const STEPS = [
@@ -87,6 +102,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [adminRole, setAdminRole] = useState(ADMIN_ROLES[0]);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -275,6 +291,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
           email,
           firstName,
           lastName,
+          role: adminRole,
           selectedCorridors,
         });
       }
@@ -553,70 +570,65 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                   )}
                 </div>
 
-                {/* Category Dropdown */}
+                {/* Category Dropdown (shadcn Select) */}
                 <div className="space-y-1.5">
                   <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200">
                     Business Model / Operating Category <span className="text-rose-500">*</span>
                   </label>
-                  <div className="relative">
-                    <select
-                      value={businessCategory}
-                      onChange={(e) => setBusinessCategory(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 shadow-2xs"
-                    >
+                  <Select value={businessCategory} onValueChange={(val) => setBusinessCategory(val)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select business category" />
+                    </SelectTrigger>
+                    <SelectContent>
                       {BUSINESS_CATEGORIES.map((cat) => (
-                        <option key={cat} value={cat}>
+                        <SelectItem key={cat} value={cat}>
                           {cat}
-                        </option>
+                        </SelectItem>
                       ))}
-                    </select>
-                  </div>
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                {/* Primary Operating Country */}
+                {/* Primary Regional Headquarters (shadcn Select) */}
                 <div className="space-y-1.5">
                   <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200">
                     Primary Regional Headquarters <span className="text-rose-500">*</span>
                   </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {OPERATING_COUNTRIES.map((c) => (
-                      <button
-                        type="button"
-                        key={c.code}
-                        onClick={() => setCountry(c.name)}
-                        className={cn(
-                          'flex items-center gap-2 p-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer text-left',
-                          country === c.name
-                            ? 'bg-amber-50 dark:bg-amber-950/50 border-amber-500 text-amber-900 dark:text-amber-200 shadow-xs ring-1 ring-amber-500'
-                            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300'
-                        )}
-                      >
-                        <span className="text-base">{c.flag}</span>
-                        <div className="min-w-0">
-                          <p className="truncate leading-tight">{c.name.split('/')[0]}</p>
-                          <span className="text-[10px] text-slate-400 font-mono">{c.currency}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
+                  <Select value={country} onValueChange={(val) => setCountry(val)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select headquarters jurisdiction" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {OPERATING_COUNTRIES.map((c) => (
+                        <SelectItem key={c.name} value={c.name}>
+                          <div className="flex items-center gap-2.5">
+                            <span className="text-base">{c.flag}</span>
+                            <span className="font-semibold text-slate-900 dark:text-white">{c.name}</span>
+                            <span className="text-[11px] text-slate-400 font-mono">({c.currency})</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                {/* Estimated Monthly Cross-Border Volume */}
+                {/* Estimated Monthly Cross-Border Volume (shadcn Select) */}
                 <div className="space-y-1.5">
                   <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200">
                     Expected Monthly Settlement Volume
                   </label>
-                  <select
-                    value={volumeTier}
-                    onChange={(e) => setVolumeTier(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 shadow-2xs"
-                  >
-                    {VOLUME_TIERS.map((tier) => (
-                      <option key={tier} value={tier}>
-                        {tier}
-                      </option>
-                    ))}
-                  </select>
+                  <Select value={volumeTier} onValueChange={(val) => setVolumeTier(val)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select expected monthly volume" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {VOLUME_TIERS.map((tier) => (
+                        <SelectItem key={tier} value={tier}>
+                          {tier}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Next Button */}
@@ -724,18 +736,21 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                     Primary Contact Number <span className="text-rose-500">*</span>
                   </label>
                   <div className="flex gap-2">
-                    <select
-                      value={phonePrefix}
-                      onChange={(e) => setPhonePrefix(e.target.value)}
-                      className="w-28 px-3 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
-                    >
-                      <option value="+234">🇳🇬 +234</option>
-                      <option value="+254">🇰🇪 +254</option>
-                      <option value="+233">🇬🇭 +233</option>
-                      <option value="+27">🇿🇦 +27</option>
-                      <option value="+20">🇪🇬 +20</option>
-                      <option value="+44">🇬🇧 +44</option>
-                    </select>
+                    <div className="w-32 shrink-0">
+                      <Select value={phonePrefix} onValueChange={(val) => setPhonePrefix(val)}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Code" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="+234">🇳🇬 +234</SelectItem>
+                          <SelectItem value="+254">🇰🇪 +254</SelectItem>
+                          <SelectItem value="+233">🇬🇭 +233</SelectItem>
+                          <SelectItem value="+27">🇿🇦 +27</SelectItem>
+                          <SelectItem value="+20">🇪🇬 +20</SelectItem>
+                          <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <input
                       type="tel"
                       placeholder="801 234 5678"
@@ -870,6 +885,28 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                       <p className="text-[11px] font-medium text-rose-600">{fieldErrors.lastName}</p>
                     )}
                   </div>
+                </div>
+
+                {/* Administrator Role Selector (shadcn Select) */}
+                <div className="space-y-1.5">
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    Administrator Role & Authorization Level <span className="text-rose-500">*</span>
+                  </label>
+                  <Select value={adminRole} onValueChange={(val) => setAdminRole(val)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select authorization role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ADMIN_ROLES.map((role) => (
+                        <SelectItem key={role} value={role}>
+                          <div className="flex items-center gap-2">
+                            <Icon icon="solar:shield-check-bold" className="w-4 h-4 text-emerald-500 shrink-0" />
+                            <span>{role}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Target Currencies & Settlement Corridors */}

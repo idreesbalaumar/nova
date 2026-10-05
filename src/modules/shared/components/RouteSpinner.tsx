@@ -32,16 +32,6 @@ export const RouteSpinner: React.FC<RouteSpinnerProps> = ({ fullScreen = true })
             </div>
           </div>
         </div>
-
-        {/* Loading status message */}
-        <div className="mt-4 flex flex-col items-center">
-          <span className="text-xs font-bold font-mono tracking-wider text-slate-800 dark:text-slate-200 uppercase">
-            Initializing NOVA Rail
-          </span>
-          <span className="text-[10px] text-slate-500 font-mono">
-            Syncing BFT Consensus Nodes...
-          </span>
-        </div>
       </div>
     </div>
   );

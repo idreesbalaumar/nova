@@ -4,6 +4,13 @@ import { Icon } from '@iconify/react';
 import { Logo } from '@/modules/shared/components/Logo';
 import { Alert } from '@/modules/shared/components/Alert';
 import { cn } from '@/modules/shared/utils/cn';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import heroCenter from '@/assets/hero_center.jpg';
 
 interface LoginPageProps {
@@ -17,6 +24,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   onNavigateRegister,
   onLoginSuccess,
 }) => {
+  const [environment, setEnvironment] = useState('mainnet');
+  const [accessDepartment, setAccessDepartment] = useState('treasury');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -40,6 +49,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   const handleFillDemo = () => {
     setEmail('merchant@nova-finance.africa');
     setPassword('NovaSecure2026!');
+    setEnvironment('mainnet');
+    setAccessDepartment('treasury');
     setFieldErrors({});
     setErrorMsg(null);
   };
@@ -93,7 +104,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             name: email.includes('merchant') || email.includes('demo') ? 'Amara Okonkwo' : email.split('@')[0],
             email,
             organization: 'Afrigate Commerce Ltd',
-            role: 'Head of Global Treasury',
+            role:
+              accessDepartment === 'cfo'
+                ? 'Chief Financial Officer'
+                : accessDepartment === 'compliance'
+                ? 'Chief Compliance Officer'
+                : accessDepartment === 'developer'
+                ? 'Lead API Engineer'
+                : 'Head of Global Treasury',
           });
         } else {
           onNavigateHome();
@@ -278,7 +296,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl sm:text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                     Welcome{' '}
                     <span className="bg-gradient-to-r from-amber-600 via-amber-500 to-emerald-600 bg-clip-text text-transparent">
                       Back
@@ -325,6 +343,77 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                   message="Connecting to your NOVA treasury console..."
                 />
               )}
+
+              {/* Workspace Environment & Access Department (shadcn Selects) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200">
+                    Settlement Workspace
+                  </label>
+                  <Select value={environment} onValueChange={(val) => setEnvironment(val)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select workspace" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="mainnet">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                          <span className="font-semibold text-xs">Live Mainnet</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="sandbox">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                          <span className="font-semibold text-xs">Testnet Sandbox</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="diaspora">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-indigo-500 shrink-0" />
+                          <span className="font-semibold text-xs">Diaspora Hub</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200">
+                    Authorization Role
+                  </label>
+                  <Select value={accessDepartment} onValueChange={(val) => setAccessDepartment(val)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select department" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="treasury">
+                        <div className="flex items-center gap-1.5">
+                          <Icon icon="solar:wallet-money-bold-duotone" className="w-3.5 h-3.5 text-amber-500" />
+                          <span className="font-semibold text-xs">Global Treasury</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="cfo">
+                        <div className="flex items-center gap-1.5">
+                          <Icon icon="solar:shield-check-bold" className="w-3.5 h-3.5 text-emerald-500" />
+                          <span className="font-semibold text-xs">Executive CFO</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="compliance">
+                        <div className="flex items-center gap-1.5">
+                          <Icon icon="solar:document-text-bold-duotone" className="w-3.5 h-3.5 text-cyan-500" />
+                          <span className="font-semibold text-xs">AML & Compliance</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="developer">
+                        <div className="flex items-center gap-1.5">
+                          <Icon icon="solar:code-square-bold-duotone" className="w-3.5 h-3.5 text-indigo-500" />
+                          <span className="font-semibold text-xs">API Switchboard</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
 
               {/* Email Field */}
               <div className="space-y-1.5">
