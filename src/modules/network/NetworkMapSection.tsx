@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  NETWORK_NODES, 
-  RECENT_TRANSACTIONS, 
-  NetworkNode, 
-  Transaction 
+import {
+  NETWORK_NODES,
+  RECENT_TRANSACTIONS,
+  NetworkNode,
+  Transaction
 } from '@/data/novaData';
 import { Icon } from '@iconify/react';
 
@@ -11,8 +11,8 @@ interface NetworkMapSectionProps {
   onSelectTransaction: (tx: Transaction) => void;
 }
 
-export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({ 
-  onSelectTransaction 
+export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
+  onSelectTransaction
 }) => {
   const [selectedNode, setSelectedNode] = useState<NetworkNode>(NETWORK_NODES[0]); // Lagos default
   const [filterMode, setFilterMode] = useState<'all' | 'cross_continental' | 'intra_africa'>('all');
@@ -55,12 +55,12 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
 
   return (
     <section id="network" className="relative py-20 bg-slate-100/70 dark:bg-[#070D18] border-t border-slate-200 dark:border-slate-800/80 overflow-hidden transition-colors">
-      
+
       {/* Background radial glow */}
       <div className="absolute top-1/2 left-1/3 w-[800px] h-[500px] bg-gradient-to-r from-emerald-500/10 via-cyan-500/5 to-transparent blur-[140px] pointer-events-none -z-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
@@ -83,31 +83,28 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
             </span>
             <button
               onClick={() => setFilterMode('all')}
-              className={`px-2.5 py-1 rounded-sm text-xs font-semibold transition-all ${
-                filterMode === 'all'
+              className={`px-2.5 py-1 rounded-sm text-xs font-semibold transition-all ${filterMode === 'all'
                   ? 'bg-emerald-600 dark:bg-emerald-500 text-white dark:text-slate-950 shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
-              }`}
+                }`}
             >
               All Corridors
             </button>
             <button
               onClick={() => setFilterMode('cross_continental')}
-              className={`px-2.5 py-1 rounded-sm text-xs font-semibold transition-all ${
-                filterMode === 'cross_continental'
+              className={`px-2.5 py-1 rounded-sm text-xs font-semibold transition-all ${filterMode === 'cross_continental'
                   ? 'bg-emerald-600 dark:bg-emerald-500 text-white dark:text-slate-950 shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
-              }`}
+                }`}
             >
               London ⇄ Africa
             </button>
             <button
               onClick={() => setFilterMode('intra_africa')}
-              className={`px-2.5 py-1 rounded-sm text-xs font-semibold transition-all ${
-                filterMode === 'intra_africa'
+              className={`px-2.5 py-1 rounded-sm text-xs font-semibold transition-all ${filterMode === 'intra_africa'
                   ? 'bg-emerald-600 dark:bg-emerald-500 text-white dark:text-slate-950 shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
-              }`}
+                }`}
             >
               Intra-African
             </button>
@@ -116,28 +113,28 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
 
         {/* Interactive Network Map Canvas Box */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          
+
           {/* Main Visual Map Area (8 Cols) */}
           <div className="lg:col-span-8 relative rounded-xl bg-white dark:bg-[#091122] border border-slate-200 dark:border-white/10 p-4 sm:p-5 shadow-sm dark:shadow-2xl overflow-hidden min-h-[500px] flex flex-col justify-between">
-            
+
             {/* Map Top Status HUD */}
             <div className="flex flex-wrap items-center justify-between gap-3 z-10">
               <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-700/80 text-xs">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
                 <span className="text-slate-700 dark:text-slate-300 font-mono">Mesh Latency: <strong className="text-emerald-600 dark:text-emerald-400">28ms</strong></span>
               </div>
-              
+
               <div className="flex items-center gap-3.5 text-xs font-mono text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" /> 
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
                   Optimal
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-cyan-500" /> 
+                  <span className="w-2 h-2 rounded-full bg-cyan-500" />
                   High Velocity
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-amber-500" /> 
+                  <span className="w-2 h-2 rounded-full bg-amber-500" />
                   Sovereign Rail
                 </span>
               </div>
@@ -145,7 +142,7 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
 
             {/* Stylized African & European Network SVG Canvas */}
             <div className="relative w-full h-[400px] my-3 select-none">
-              
+
               <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 800 450">
                 <defs>
                   <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -153,7 +150,7 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
                     <stop offset="50%" stopColor="#0EA5E9" stopOpacity="0.8" />
                     <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.8" />
                   </linearGradient>
-                  
+
                   <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                     <feGaussianBlur stdDeviation="2.5" result="blur" />
                     <feMerge>
@@ -244,20 +241,18 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
                   >
                     <div className="relative flex items-center justify-center">
                       <div
-                        className={`absolute w-10 h-10 rounded-full transition-all duration-300 ${
-                          isSelected
+                        className={`absolute w-10 h-10 rounded-full transition-all duration-300 ${isSelected
                             ? 'bg-emerald-400/30 scale-125 animate-ping'
                             : 'bg-cyan-500/10 group-hover:scale-110'
-                        }`}
+                          }`}
                       />
-                      
+
                       {/* Inner Node Pill with reduced roundness */}
                       <div
-                        className={`relative px-2.5 py-1.5 rounded-md flex items-center gap-1.5 backdrop-blur-md shadow-sm transition-all duration-200 ${
-                          isSelected
+                        className={`relative px-2.5 py-1.5 rounded-md flex items-center gap-1.5 backdrop-blur-md shadow-sm transition-all duration-200 ${isSelected
                             ? 'bg-emerald-600 dark:bg-emerald-500 text-white dark:text-slate-950 scale-105 ring-2 ring-emerald-400/40'
                             : 'bg-white dark:bg-slate-900/90 text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700/80 group-hover:border-cyan-500 group-hover:scale-105'
-                        }`}
+                          }`}
                       >
                         <span className="text-xs">{node.flag}</span>
                         <span className="text-xs font-bold font-mono tracking-tight">
@@ -268,11 +263,10 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
 
                     {/* Node Mini Metric Badge */}
                     <div
-                      className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-0.5 rounded-sm text-[10px] font-mono whitespace-nowrap transition-all duration-200 ${
-                        isSelected
+                      className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-0.5 rounded-sm text-[10px] font-mono whitespace-nowrap transition-all duration-200 ${isSelected
                           ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 block'
                           : 'hidden group-hover:block bg-white dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700'
-                      }`}
+                        }`}
                     >
                       {node.tps} • {node.latency}
                     </div>
@@ -298,7 +292,7 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
 
           {/* Node Deep-Dive Telemetry Card (4 Cols) */}
           <div className="lg:col-span-4 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 p-5 shadow-sm dark:shadow-2xl">
-            
+
             {/* Selected Node Details */}
             <div className="flex items-start justify-between gap-3 pb-5 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-3">
@@ -405,7 +399,7 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-mono">
                 {liveTransactions.map((tx) => (
-                  <tr 
+                  <tr
                     key={tx.id}
                     onClick={() => onSelectTransaction(tx)}
                     className="hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors group"

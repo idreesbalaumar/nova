@@ -1,11 +1,14 @@
 import React from 'react';
 import { Logo } from './Logo';
-import { KenteRibbon } from './KentePattern';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onOpenLogin?: () => void;
+  onOpenRegister?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenLogin, onOpenRegister }) => {
   return (
     <footer className="relative bg-[#FAF7F2] dark:bg-[#070A10] text-slate-600 dark:text-slate-400 border-t border-amber-500/20 dark:border-slate-900 text-xs transition-colors">
-      <KenteRibbon height={4} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
         {/* Top Grid */}
@@ -83,8 +86,20 @@ export const Footer: React.FC = () => {
               <li><a href="#intelligence" className="hover:text-slate-950 dark:hover:text-white transition-colors">Multi-Currency Ledger</a></li>
               <li><a href="#intelligence" className="hover:text-slate-950 dark:hover:text-white transition-colors">Smart Order FX Router</a></li>
               <li><a href="#ai-assistant" className="hover:text-slate-950 dark:hover:text-white transition-colors">NOVA AI Copilot</a></li>
-              <li><a href="#security" className="hover:text-slate-950 dark:hover:text-white transition-colors">3-of-5 MPC Custody</a></li>
-              <li><a href="#security" className="hover:text-slate-950 dark:hover:text-white transition-colors">Cryptographic Merkle Proofs</a></li>
+              {onOpenLogin && (
+                <li>
+                  <button onClick={onOpenLogin} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors text-left cursor-pointer">
+                    Merchant Sign In
+                  </button>
+                </li>
+              )}
+              {onOpenRegister && (
+                <li>
+                  <button onClick={onOpenRegister} className="text-emerald-700 dark:text-emerald-400 font-semibold hover:underline transition-colors text-left cursor-pointer">
+                    Open Business Account →
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 

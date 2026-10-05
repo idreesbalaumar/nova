@@ -4,9 +4,10 @@ import { toast } from 'sonner';
 
 interface FinalCtaSectionProps {
   onOpenSandbox: () => void;
+  onOpenRegister?: () => void;
 }
 
-export const FinalCtaSection: React.FC<FinalCtaSectionProps> = ({ onOpenSandbox }) => {
+export const FinalCtaSection: React.FC<FinalCtaSectionProps> = ({ onOpenSandbox, onOpenRegister }) => {
   const [selectedLanguage, setSelectedLanguage] = useState<'typescript' | 'python' | 'curl'>('typescript');
   const [copiedKey, setCopiedKey] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
@@ -177,7 +178,16 @@ print(f"Finalized in {transfer.latency_ms}ms with zero FX spread.")`,
               <span>Zero Backend Required</span>
             </div>
 
-            <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full sm:w-auto">
+              {onOpenRegister && (
+                <button
+                  onClick={onOpenRegister}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md font-bold text-xs text-slate-800 dark:text-white bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 shadow-xs active:scale-95 transition-all cursor-pointer"
+                >
+                  <Icon icon="solar:user-plus-bold" className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <span>Open Production Account</span>
+                </button>
+              )}
               <button
                 onClick={onOpenSandbox}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-md font-bold text-xs text-white bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 shadow-md active:scale-95 transition-all cursor-pointer"

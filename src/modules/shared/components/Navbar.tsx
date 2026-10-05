@@ -4,9 +4,15 @@ import { Logo } from './Logo';
 
 interface NavbarProps {
   onOpenSandbox: () => void;
+  onOpenLogin?: () => void;
+  onOpenRegister?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenSandbox }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+  onOpenSandbox,
+  onOpenLogin,
+  onOpenRegister,
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDark, setIsDark] = useState(false); // Light mode default
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -134,14 +140,45 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSandbox }) => {
               )}
             </button>
 
-            {/* Sandbox CTA with Iconify */}
+            {/* Sign In Button */}
+            {onOpenLogin && (
+              <button
+                onClick={onOpenLogin}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-amber-800 dark:hover:text-white hover:bg-amber-50/80 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <Icon icon="solar:login-2-linear" className="w-3.5 h-3.5" />
+                <span>Sign In</span>
+              </button>
+            )}
+
+            {/* Open Account CTA */}
+            {onOpenRegister ? (
+              <button
+                onClick={onOpenRegister}
+                className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
+              >
+                <Icon icon="solar:user-plus-bold" className="w-3.5 h-3.5" />
+                <span>Open Account</span>
+                <Icon icon="solar:alt-arrow-right-linear" className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            ) : (
+              <button
+                onClick={onOpenSandbox}
+                className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
+              >
+                <Icon icon="solar:code-square-bold" className="w-3.5 h-3.5" />
+                <span>Sandbox Console</span>
+                <Icon icon="solar:alt-arrow-right-linear" className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            )}
+
+            {/* Developer Sandbox Icon Button */}
             <button
               onClick={onOpenSandbox}
-              className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
+              className="p-1.5 rounded-md bg-white dark:bg-slate-900 border border-amber-500/20 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-amber-400 dark:hover:border-slate-600 transition-colors shadow-xs cursor-pointer"
+              title="Launch Developer Sandbox Console"
             >
-              <Icon icon="solar:code-square-bold" className="w-3.5 h-3.5" />
-              <span>Sandbox Console</span>
-              <Icon icon="solar:alt-arrow-right-linear" className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+              <Icon icon="solar:code-square-bold" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             </button>
           </div>
 
@@ -185,16 +222,45 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSandbox }) => {
                 <span>{item.name}</span>
               </a>
             ))}
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenSandbox();
-              }}
-              className="mt-2 w-full py-2.5 rounded-md text-center text-xs font-semibold text-white bg-gradient-to-r from-amber-500 to-emerald-600 shadow-sm flex items-center justify-center gap-1.5"
-            >
-              <Icon icon="solar:code-square-bold" className="w-3.5 h-3.5" />
-              <span>Launch Developer Sandbox</span>
-            </button>
+
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2">
+              {onOpenLogin && (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenLogin();
+                  }}
+                  className="w-full py-2 rounded-md text-center text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 flex items-center justify-center gap-1.5"
+                >
+                  <Icon icon="solar:login-2-linear" className="w-4 h-4" />
+                  <span>Sign In</span>
+                </button>
+              )}
+
+              {onOpenRegister && (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenRegister();
+                  }}
+                  className="w-full py-2.5 rounded-md text-center text-xs font-semibold text-white bg-gradient-to-r from-amber-500 to-emerald-600 shadow-sm flex items-center justify-center gap-1.5"
+                >
+                  <Icon icon="solar:user-plus-bold" className="w-3.5 h-3.5" />
+                  <span>Open Account</span>
+                </button>
+              )}
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenSandbox();
+                }}
+                className="w-full py-2 text-center text-[11px] font-medium text-slate-500 dark:text-slate-400 hover:text-amber-600 flex items-center justify-center gap-1"
+              >
+                <Icon icon="solar:code-square-bold" className="w-3.5 h-3.5" />
+                <span>Developer Sandbox Console</span>
+              </button>
+            </div>
           </div>
         )}
       </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Navbar } from '@/modules/shared/components/Navbar';
 import { HeroSection } from '@/modules/hero/HeroSection';
 import { NetworkMapSection } from '@/modules/network/NetworkMapSection';
@@ -10,13 +10,25 @@ import { Footer } from '@/modules/shared/components/Footer';
 import { ReceiptModal } from '@/modules/shared/components/ReceiptModal';
 import { SandboxModal } from '@/modules/shared/components/SandboxModal';
 import { RouteSpinner } from '@/modules/shared/components/RouteSpinner';
+import { LoginPage } from '@/modules/auth/LoginPage';
+import { RegisterPage } from '@/modules/auth/RegisterPage';
 import { Transaction } from '@/data/novaData';
-import { Toaster } from 'sonner';
+import { Toaster, toast } from 'sonner';
+
+export type AppRoute = 'home' | 'login' | 'register';
 
 export default function App() {
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isSandboxOpen, setIsSandboxOpen] = useState<boolean>(false);
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
+  const [activeRoute, setActiveRoute] = useState<AppRoute>(() => {
+    if (typeof window === 'undefined') return 'home';
+    const path = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    if (path.includes('/login') || hash === '#login') return 'login';
+    if (path.includes('/register') || hash === '#register') return 'register';
+    return 'home';
+  });
 
   // Initial simulated route hydration matching CarePortal
   useEffect(() => {
@@ -26,6 +38,37 @@ export default function App() {
       window.scrollTo(0, 0);
     }, 900);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Listen to popstate and hashchange for seamless client-side browser navigation
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      if (path.includes('/login') || hash === '#login') {
+        setActiveRoute('login');
+      } else if (path.includes('/register') || hash === '#register') {
+        setActiveRoute('register');
+      } else {
+        setActiveRoute('home');
+      }
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
+
+  const navigateTo = useCallback((route: AppRoute) => {
+    setActiveRoute(route);
+    const targetUrl = route === 'home' ? '/' : `/${route}`;
+    if (window.location.pathname !== targetUrl) {
+      window.history.pushState(null, '', targetUrl);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   const handleExploreNetwork = () => {
@@ -48,58 +91,90 @@ export default function App() {
         closeButton
         toastOptions={{
           style: {
-            borderRadius: '6px',
+            borderRadius: '10px',
             fontFamily: "'Plus Jakarta Sans', sans-serif",
           },
         }}
       />
 
-      {/* Navigation Header */}
-      <Navbar onOpenSandbox={() => setIsSandboxOpen(true)} />
-
-      {/* Main Page Layout */}
-      <main className="flex-1">
-        {/* 1. Hero Experience */}
-        <HeroSection 
-          onOpenSandbox={() => setIsSandboxOpen(true)}
-          onExploreNetwork={handleExploreNetwork}
+      {/* Conditional Rendering Based on Route */}
+      {activeRoute === 'login' ? (
+        <LoginPage
+          onNavigateHome={() => navigateTo('home')}
+          onNavigateRegister={() => navigateTo('register')}
+          onLoginSuccess={(user) => {
+            toast.success(`Welcome back, ${user.name}! Connected to NOVA network.`);
+            navigateTo('home');
+          }}
         />
-
-        {/* 2. African Financial Network */}
-        <NetworkMapSection 
-          onSelectTransaction={(tx) => setSelectedTransaction(tx)}
+      ) : activeRoute === 'register' ? (
+        <RegisterPage
+          onNavigateHome={() => navigateTo('home')}
+          onNavigateLogin={() => navigateTo('login')}
+          onRegisterSuccess={(data) => {
+            toast.success(`Account registered for ${data.businessName}! Welcome to NOVA.`);
+            navigateTo('home');
+          }}
         />
+      ) : (
+        <>
+          {/* Navigation Header */}
+          <Navbar 
+            onOpenSandbox={() => setIsSandboxOpen(true)}
+            onOpenLogin={() => navigateTo('login')}
+            onOpenRegister={() => navigateTo('register')}
+          />
 
-        {/* 3. Financial Intelligence & Treasury OS */}
-        <FinancialIntelligenceSection 
-          onSelectTransaction={(tx) => setSelectedTransaction(tx)}
-        />
+          {/* Main Page Layout */}
+          <main className="flex-1">
+            {/* 1. Hero Experience */}
+            <HeroSection 
+              onOpenSandbox={() => setIsSandboxOpen(true)}
+              onExploreNetwork={handleExploreNetwork}
+              onOpenRegister={() => navigateTo('register')}
+            />
 
-        {/* 4. NOVA AI Financial Assistant */}
-        <NovaAiSection />
+            {/* 2. African Financial Network */}
+            <NetworkMapSection 
+              onSelectTransaction={(tx) => setSelectedTransaction(tx)}
+            />
 
-        {/* 5. Security & Trust Architecture */}
-        <SecurityTrustSection />
+            {/* 3. Financial Intelligence & Treasury OS */}
+            <FinancialIntelligenceSection 
+              onSelectTransaction={(tx) => setSelectedTransaction(tx)}
+            />
 
-        {/* 6. Final CTA & Developer Sandbox */}
-        <FinalCtaSection 
-          onOpenSandbox={() => setIsSandboxOpen(true)}
-        />
-      </main>
+            {/* 4. NOVA AI Financial Assistant */}
+            <NovaAiSection />
 
-      {/* Footer */}
-      <Footer />
+            {/* 5. Security & Trust Architecture */}
+            <SecurityTrustSection />
 
-      {/* Interactive Modals */}
-      <ReceiptModal 
-        transaction={selectedTransaction}
-        onClose={() => setSelectedTransaction(null)}
-      />
+            {/* 6. Final CTA & Developer Sandbox */}
+            <FinalCtaSection 
+              onOpenSandbox={() => setIsSandboxOpen(true)}
+              onOpenRegister={() => navigateTo('register')}
+            />
+          </main>
 
-      <SandboxModal 
-        isOpen={isSandboxOpen}
-        onClose={() => setIsSandboxOpen(false)}
-      />
+          {/* Footer */}
+          <Footer 
+            onOpenLogin={() => navigateTo('login')}
+            onOpenRegister={() => navigateTo('register')}
+          />
+
+          {/* Interactive Modals */}
+          <ReceiptModal 
+            transaction={selectedTransaction}
+            onClose={() => setSelectedTransaction(null)}
+          />
+
+          <SandboxModal 
+            isOpen={isSandboxOpen}
+            onClose={() => setIsSandboxOpen(false)}
+          />
+        </>
+      )}
     </div>
   );
 }

@@ -298,40 +298,7 @@ export const HeroMapBackground: React.FC<HeroMapBackgroundProps> = ({
           </g>
         ))}
 
-        {/* Live Network Throughput Badge Overlay */}
-        <g transform="translate(180, 60)">
-          <rect
-            x="0"
-            y="0"
-            width="226"
-            height="32"
-            rx="16"
-            fill={isDarkMode ? "rgba(11, 14, 20, 0.8)" : "rgba(255, 255, 255, 0.9)"}
-            stroke={isDarkMode ? "rgba(245, 158, 11, 0.35)" : "rgba(217, 119, 6, 0.3)"}
-            strokeWidth="1"
-          />
-          <circle cx="16" cy="16" r="4" fill="#10B981" />
-          <motion.circle
-            cx="16"
-            cy="16"
-            r="8"
-            fill="none"
-            stroke="#10B981"
-            strokeWidth="1"
-            animate={{ scale: [0.8, 1.8], opacity: [0.8, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity }}
-          />
-          <text
-            x="28"
-            y="20"
-            fill={isDarkMode ? "#CBD5E1" : "#334155"}
-            fontSize="10.5"
-            fontWeight="700"
-            fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
-          >
-            Live African Settlement • 24,891 TPS
-          </text>
-        </g>
+
       </svg>
     </div>
   );

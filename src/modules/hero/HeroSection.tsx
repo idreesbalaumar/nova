@@ -4,7 +4,6 @@ import { Icon } from "@iconify/react";
 import { cn } from "@/modules/shared/utils/cn";
 import { HeroMapBackground } from "./HeroMapBackground";
 import { HeroVideoModal } from "./HeroVideoModal";
-import { KenteRibbon } from "../shared/components/KentePattern";
 import { AfricanBrushStroke } from "../shared/components/AfricanBrushStroke";
 import heroLeft from "@/assets/hero_left.jpg";
 import heroCenter from "@/assets/hero_center.jpg";
@@ -13,10 +12,12 @@ import heroRight from "@/assets/hero_right.jpg";
 interface HeroSectionProps {
   onOpenSandbox: () => void;
   onExploreNetwork?: () => void;
+  onOpenRegister?: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onOpenSandbox,
+  onOpenRegister,
 }) => {
   const [videoOpen, setVideoOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -57,10 +58,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             : "bg-gradient-to-br from-[#FFFDF9] via-[#FAF7F2] to-[#F5EFE6]"
         )}
       >
-        {/* Authentic Top Kente Ribbon Accent Strip */}
-        <div className="absolute top-0 inset-x-0 z-20 shadow-xs">
-          <KenteRibbon height={5} />
-        </div>
 
         {/* Animated Map Background with African Settlement Lines & Constellation Orbits (inspired by Charity Grants SuccessStories) */}
         <HeroMapBackground
@@ -211,7 +208,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
                 <button
                   type="button"
-                  onClick={onOpenSandbox}
+                  onClick={onOpenRegister || onOpenSandbox}
                   className="rounded-full px-7 sm:px-9 py-2.5 sm:py-3 shadow-lg shadow-amber-500/20 text-xs sm:text-sm md:text-base font-bold cursor-pointer transition-all duration-200 bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 text-white flex items-center gap-2"
                 >
                   <span>Get Started Free</span>

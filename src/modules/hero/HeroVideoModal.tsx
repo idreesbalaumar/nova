@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/modules/shared/utils/cn";
-import { KenteRibbon } from "../shared/components/KentePattern";
 
 interface HeroVideoModalProps {
   open: boolean;
@@ -129,10 +128,7 @@ export const HeroVideoModal: React.FC<HeroVideoModalProps> = ({
           {/* Main Modal Container */}
           <div className="relative w-full aspect-video bg-black/95 overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl border border-amber-400/30 shadow-[0_25px_60px_-15px_rgba(217,119,6,0.35)]">
             
-            {/* Subtle Kente Ribbon Top Accent */}
-            <div className="absolute top-0 inset-x-0 z-30">
-              <KenteRibbon height={3} />
-            </div>
+
 
             {activeTab === "video" ? (
               <>
