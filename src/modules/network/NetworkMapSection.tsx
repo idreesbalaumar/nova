@@ -5,7 +5,10 @@ import {
   NetworkNode,
   Transaction
 } from '@/data/novaData';
+import { AFRICA_MAP_FEATURES } from './africaMapData';
 import { Icon } from '@iconify/react';
+import { motion } from 'framer-motion';
+import { cn } from '../shared/utils/cn';
 
 interface NetworkMapSectionProps {
   onSelectTransaction: (tx: Transaction) => void;
@@ -23,14 +26,14 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
   useEffect(() => {
     const interval = setInterval(() => {
       setActivePacketIndex((prev) => (prev + 1) % 100);
-    }, 50);
+    }, 45);
     return () => clearInterval(interval);
   }, []);
 
   // Filter nodes or corridors
   const filteredNodes = NETWORK_NODES.filter((node) => {
     if (filterMode === 'cross_continental') {
-      return ['london', 'lagos', 'nairobi', 'accra'].includes(node.id);
+      return ['london', 'lagos', 'nairobi', 'accra', 'cairo'].includes(node.id);
     }
     if (filterMode === 'intra_africa') {
       return node.id !== 'london';
@@ -54,7 +57,37 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
     { from: 'lagos', to: 'johannesburg', color: '#EC4899', label: 'NGN/ZAR' },
   ];
 
+  const filteredConnections = connections.filter((conn) => {
+    if (filterMode === 'cross_continental') {
+      return conn.from === 'london' || conn.to === 'london';
+    }
+    if (filterMode === 'intra_africa') {
+      return conn.from !== 'london' && conn.to !== 'london';
+    }
+    return true;
+  });
+
   const getNodeById = (id: string) => NETWORK_NODES.find((n) => n.id === id);
+
+  // Helper to compute great-circle aerodynamic curve between two nodes
+  const getArcGeometry = (nodeA: NetworkNode, nodeB: NetworkNode) => {
+    const x1 = nodeA.svgX;
+    const y1 = nodeA.svgY;
+    const x2 = nodeB.svgX;
+    const y2 = nodeB.svgY;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const midX = (x1 + x2) / 2;
+    const midY = (y1 + y2) / 2;
+    const bend = Math.min(14, dist * 0.12);
+    const nx = -dy / dist;
+    const ny = dx / dist;
+    const ctrlX = midX + nx * bend;
+    const ctrlY = midY + ny * bend;
+    const pathD = `M ${x1} ${y1} Q ${ctrlX} ${ctrlY} ${x2} ${y2}`;
+    return { x1, y1, x2, y2, ctrlX, ctrlY, pathD };
+  };
 
   return (
     <section id="network" className="relative py-20 bg-slate-100/70 dark:bg-[#070D18] border-t border-slate-200 dark:border-slate-800/80 overflow-hidden transition-colors">
@@ -118,10 +151,10 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
           {/* Main Visual Map Area (8 Cols) */}
-          <div className="lg:col-span-8 relative rounded-xl bg-white dark:bg-[#091122] border border-slate-200 dark:border-white/10 p-4 sm:p-5 shadow-sm dark:shadow-2xl overflow-hidden min-h-[500px] flex flex-col justify-between">
+          <div className="lg:col-span-8 relative rounded-xl bg-white dark:bg-[#091122] border border-slate-200 dark:border-white/10 p-4 sm:p-5 shadow-sm dark:shadow-2xl overflow-hidden min-h-[520px] flex flex-col justify-between">
 
             {/* Map Top Status HUD */}
-            <div className="flex flex-wrap items-center justify-between gap-3 z-10">
+            <div className="flex flex-wrap items-center justify-between gap-3 z-10 mb-2">
               <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-700/80 text-xs">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
                 <span className="text-slate-700 dark:text-slate-300 font-mono">Mesh Latency: <strong className="text-emerald-600 dark:text-emerald-400">28ms</strong></span>
@@ -143,216 +176,282 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
               </div>
             </div>
 
-            {/* Stylized African & European Network SVG Canvas */}
-            <div className="relative w-full h-[400px] my-3 select-none">
+            {/* Authentic Africa-Focused High-Fidelity Vector Network Canvas */}
+            <div className="relative w-full h-[460px] sm:h-[490px] my-1 select-none flex items-center justify-center">
 
-              <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 800 450">
+              <svg
+                className="w-full h-full"
+                viewBox="290 350 340 290"
+                preserveAspectRatio="xMidYMid meet"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <defs>
-                  <linearGradient id="africaMeshGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#10B981" stopOpacity="0.14" />
-                    <stop offset="45%" stopColor="#0EA5E9" stopOpacity="0.10" />
-                    <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.12" />
-                  </linearGradient>
+                  {/* Glowing Laser Filter */}
+                  <filter id="meshGlow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="1.5" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
 
-                  <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#10B981" stopOpacity="0.9" />
-                    <stop offset="50%" stopColor="#0EA5E9" stopOpacity="0.9" />
-                    <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.9" />
-                  </linearGradient>
+                  {/* Badge Drop Shadow */}
+                  <filter id="badgeShadow" x="-10%" y="-10%" width="120%" height="130%">
+                    <feDropShadow dx="0" dy="1.2" stdDeviation="1.2" floodColor="#000000" floodOpacity="0.25" />
+                  </filter>
 
+                  {/* Radial Pulse Gradients */}
                   <radialGradient id="lagosPulseGrad" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#10B981" stopOpacity="0.3" />
+                    <stop offset="0%" stopColor="#10B981" stopOpacity="0.35" />
                     <stop offset="100%" stopColor="#10B981" stopOpacity="0" />
                   </radialGradient>
 
                   <radialGradient id="nairobiPulseGrad" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#0EA5E9" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#0EA5E9" stopOpacity="0.2" />
+                    <stop offset="0%" stopColor="#0EA5E9" stopOpacity="0.35" />
+                    <stop offset="100%" stopColor="#0EA5E9" stopOpacity="0" />
                   </radialGradient>
-
-                  <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="2.5" result="blur" />
-                    <feMerge>
-                      <feMergeNode in="blur" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
-
-                  <filter id="shadowFilter" x="-10%" y="-10%" width="120%" height="120%">
-                    <feGaussianBlur stdDeviation="6" result="blur" />
-                    <feMerge>
-                      <feMergeNode in="blur" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
                 </defs>
 
                 {/* Coordinate Grid Background */}
-                <g className="opacity-10 dark:opacity-20">
-                  {[...Array(12)].map((_, i) => (
-                    <line key={`v-${i}`} x1={i * 70} y1="0" x2={i * 70} y2="450" stroke="#0EA5E9" strokeWidth="0.5" strokeDasharray="3 3" />
+                <g className="opacity-15 dark:opacity-20 pointer-events-none">
+                  {[...Array(15)].map((_, i) => (
+                    <line
+                      key={`v-${i}`}
+                      x1={290 + i * 25}
+                      y1="350"
+                      x2={290 + i * 25}
+                      y2="640"
+                      stroke="#0EA5E9"
+                      strokeWidth="0.3"
+                      strokeDasharray="2 3"
+                    />
                   ))}
-                  {[...Array(8)].map((_, i) => (
-                    <line key={`h-${i}`} x1="0" y1={i * 60} x2="800" y2={i * 60} stroke="#0EA5E9" strokeWidth="0.5" strokeDasharray="3 3" />
+                  {[...Array(12)].map((_, i) => (
+                    <line
+                      key={`h-${i}`}
+                      x1="290"
+                      y1={350 + i * 25}
+                      x2="630"
+                      y2={350 + i * 25}
+                      stroke="#0EA5E9"
+                      strokeWidth="0.3"
+                      strokeDasharray="2 3"
+                    />
                   ))}
                 </g>
 
                 {/* Equatorial & Tropic Reference Lines */}
-                <line x1="160" y1="225" x2="680" y2="225" stroke="#10B981" strokeWidth="0.75" strokeDasharray="4 6" opacity="0.3" />
-                <text x="170" y="220" fill="#10B981" fontSize="8" opacity="0.6" fontFamily="monospace">0° EQUATOR</text>
-                <text x="170" y="105" fill="#F59E0B" fontSize="8" opacity="0.5" fontFamily="monospace">23.5° N TROPIC OF CANCER</text>
-                <text x="170" y="345" fill="#0EA5E9" fontSize="8" opacity="0.5" fontFamily="monospace">23.5° S TROPIC OF CAPRICORN</text>
+                <line x1="295" y1="445" x2="625" y2="445" stroke="#F59E0B" strokeWidth="0.45" strokeDasharray="3 4" opacity="0.35" />
+                <text x="296" y="442" fill="#F59E0B" fontSize="4.2" opacity="0.6" fontFamily="monospace">23.5° N TROPIC OF CANCER</text>
 
-                {/* Concentric Regional Coverage Rings (Lagos & Nairobi) */}
-                <circle cx="352" cy="216" r="55" fill="url(#lagosPulseGrad)" />
-                <circle cx="352" cy="216" r="105" fill="none" stroke="#10B981" strokeWidth="0.75" strokeDasharray="3 4" opacity="0.35" />
-                <circle cx="496" cy="234" r="45" fill="url(#nairobiPulseGrad)" />
-                <circle cx="496" cy="234" r="85" fill="none" stroke="#0EA5E9" strokeWidth="0.75" strokeDasharray="3 4" opacity="0.3" />
+                <line x1="295" y1="530" x2="625" y2="530" stroke="#10B981" strokeWidth="0.5" strokeDasharray="4 4" opacity="0.4" />
+                <text x="296" y="527" fill="#10B981" fontSize="4.2" opacity="0.75" fontFamily="monospace">0° EQUATOR</text>
 
-                {/* Focused African Continent Silhouette */}
-                <g filter="url(#shadowFilter)">
-                  {/* African Continental Landmass */}
-                  <path
-                    d="M 270 70 
-                       C 320 60, 395 55, 465 75 
-                       C 515 90, 560 110, 555 130 
-                       C 550 145, 580 152, 620 165 
-                       C 645 180, 635 200, 600 215 
-                       C 580 225, 565 235, 550 258 
-                       C 538 280, 530 315, 520 350 
-                       C 505 390, 480 435, 455 455 
-                       C 430 472, 405 468, 390 450 
-                       C 378 430, 385 390, 378 360 
-                       C 368 335, 340 315, 345 288 
-                       C 350 265, 310 260, 275 255 
-                       C 240 248, 208 225, 215 190 
-                       C 222 155, 250 120, 260 95 
-                       C 268 80, 265 72, 270 70 Z"
-                    fill="url(#africaMeshGrad)"
-                    stroke="currentColor"
-                    className="text-emerald-500/40 dark:text-emerald-400/50"
-                    strokeWidth="1.5"
-                    strokeLinejoin="round"
-                  />
+                <line x1="295" y1="595" x2="625" y2="595" stroke="#0EA5E9" strokeWidth="0.45" strokeDasharray="3 4" opacity="0.35" />
+                <text x="296" y="592" fill="#0EA5E9" fontSize="4.2" opacity="0.6" fontFamily="monospace">23.5° S TROPIC OF CAPRICORN</text>
 
-                  {/* Madagascar Island */}
-                  <path
-                    d="M 555 330 C 565 310, 585 322, 580 355 C 576 385, 560 415, 550 410 C 542 400, 546 355, 555 330 Z"
-                    fill="url(#africaMeshGrad)"
-                    stroke="currentColor"
-                    className="text-emerald-500/40 dark:text-emerald-400/50"
-                    strokeWidth="1.2"
-                  />
+                {/* Regional Coverage Sonar Rings */}
+                <circle cx="422" cy="522" r="18" fill="url(#lagosPulseGrad)" className="pointer-events-none" />
+                <circle cx="422" cy="522" r="38" fill="none" stroke="#10B981" strokeWidth="0.4" strokeDasharray="2 3" opacity="0.4" className="pointer-events-none" />
+                <circle cx="501" cy="530" r="16" fill="url(#nairobiPulseGrad)" className="pointer-events-none" />
+                <circle cx="501" cy="530" r="34" fill="none" stroke="#0EA5E9" strokeWidth="0.4" strokeDasharray="2 3" opacity="0.4" className="pointer-events-none" />
 
-                  {/* Great African Rift Valley Line */}
-                  <path
-                    d="M 515 90 Q 500 160 496 234 Q 480 290 455 350"
-                    fill="none"
-                    stroke="#F59E0B"
-                    strokeWidth="1.2"
-                    strokeDasharray="2 4"
-                    opacity="0.6"
-                  />
+                {/* Authentic African Continent Vector Map */}
+                <g className="africa-countries pointer-events-none">
+                  {AFRICA_MAP_FEATURES.map((feature) => {
+                    const isNetworkCountry = ['ng', 'ke', 'gh', 'za', 'eg', 'rw', 'gb'].includes(feature.id);
+                    const isSelectedCountry =
+                      ((selectedNode.id === 'lagos' || selectedNode.id === 'abuja') && feature.id === 'ng') ||
+                      (selectedNode.id === 'nairobi' && feature.id === 'ke') ||
+                      (selectedNode.id === 'accra' && feature.id === 'gh') ||
+                      (selectedNode.id === 'johannesburg' && feature.id === 'za') ||
+                      (selectedNode.id === 'cairo' && feature.id === 'eg') ||
+                      (selectedNode.id === 'kigali' && feature.id === 'rw') ||
+                      (selectedNode.id === 'london' && feature.id === 'gb');
 
-                  {/* Offshore British Isles (London Gateway at Top) */}
-                  <path
-                    d="M 330 35 C 342 30, 350 42, 345 58 C 340 70, 325 68, 330 35 Z"
-                    className="fill-slate-100 dark:fill-white/10 stroke-slate-400 dark:stroke-white/20"
-                    strokeWidth="1"
-                  />
+                    return (
+                      <g key={feature.id} id={`country-${feature.id}`}>
+                        {feature.paths.map((pathD, pIdx) => (
+                          <path
+                            key={pIdx}
+                            d={pathD}
+                            className={cn(
+                              "transition-all duration-300",
+                              isSelectedCountry
+                                ? "fill-emerald-500/25 stroke-emerald-400 stroke-[0.9]"
+                                : isNetworkCountry
+                                ? "fill-emerald-500/10 dark:fill-emerald-400/10 stroke-emerald-600/35 dark:stroke-emerald-400/35 stroke-[0.6]"
+                                : "fill-slate-200/50 dark:fill-slate-800/40 stroke-slate-300 dark:stroke-slate-700/60 stroke-[0.35]"
+                            )}
+                          />
+                        ))}
+                      </g>
+                    );
+                  })}
                 </g>
 
                 {/* Active Dynamic Corridors Arcs */}
-                {connections.map((conn, idx) => {
+                {filteredConnections.map((conn, idx) => {
                   const nodeA = getNodeById(conn.from);
                   const nodeB = getNodeById(conn.to);
                   if (!nodeA || !nodeB) return null;
 
-                  const x1 = (nodeA.xPercent / 100) * 800;
-                  const y1 = (nodeA.yPercent / 100) * 450;
-                  const x2 = (nodeB.xPercent / 100) * 800;
-                  const y2 = (nodeB.yPercent / 100) * 450;
-
-                  const midX = (x1 + x2) / 2;
-                  const midY = (y1 + y2) / 2 - 35;
-
+                  const { x1, y1, x2, y2, ctrlX, ctrlY, pathD } = getArcGeometry(nodeA, nodeB);
                   const isHighlighted = selectedNode.id === conn.from || selectedNode.id === conn.to;
 
-                  const t = ((activePacketIndex + idx * 15) % 100) / 100;
-                  const packetX = Math.pow(1 - t, 2) * x1 + 2 * (1 - t) * t * midX + Math.pow(t, 2) * x2;
-                  const packetY = Math.pow(1 - t, 2) * y1 + 2 * (1 - t) * t * midY + Math.pow(t, 2) * y2;
+                  // Compute moving packet along bezier curve
+                  const t = ((activePacketIndex + idx * 12) % 100) / 100;
+                  const packetX = Math.pow(1 - t, 2) * x1 + 2 * (1 - t) * t * ctrlX + Math.pow(t, 2) * x2;
+                  const packetY = Math.pow(1 - t, 2) * y1 + 2 * (1 - t) * t * ctrlY + Math.pow(t, 2) * y2;
 
                   return (
-                    <g key={`conn-${idx}`}>
+                    <g key={`conn-${idx}`} className="pointer-events-none">
+                      {/* Base Corridor Path */}
                       <path
-                        d={`M ${x1} ${y1} Q ${midX} ${midY} ${x2} ${y2}`}
+                        d={pathD}
                         fill="none"
                         stroke={isHighlighted ? conn.color : 'currentColor'}
-                        className={isHighlighted ? '' : 'text-slate-300 dark:text-slate-700'}
-                        strokeWidth={isHighlighted ? 2.5 : 1.2}
-                        strokeDasharray={isHighlighted ? 'none' : '4 4'}
-                        filter={isHighlighted ? 'url(#glow)' : undefined}
+                        className={isHighlighted ? 'opacity-90' : 'text-slate-300 dark:text-slate-700/80 opacity-40'}
+                        strokeWidth={isHighlighted ? 1.4 : 0.6}
+                        strokeDasharray={isHighlighted ? 'none' : '2 3'}
+                        filter={isHighlighted ? 'url(#meshGlow)' : undefined}
                       />
+
+                      {/* Moving Pulse Packet */}
                       <circle
                         cx={packetX}
                         cy={packetY}
-                        r={isHighlighted ? 4 : 2.5}
-                        fill={conn.color}
-                        filter="url(#glow)"
+                        r={isHighlighted ? 2.2 : 1.4}
+                        fill={isHighlighted ? conn.color : '#94A3B8'}
+                        filter={isHighlighted ? 'url(#meshGlow)' : undefined}
                       />
                     </g>
                   );
                 })}
-              </svg>
 
-              {/* Render City Nodes on Canvas */}
-              {filteredNodes.map((node) => {
-                const isSelected = selectedNode.id === node.id;
+                {/* Interactive Financial Node Radar Pins & Non-Colliding Badges */}
+                {filteredNodes.map((node) => {
+                  const isSelected = selectedNode.id === node.id;
+                  const badgeW = node.badgeWidth || 44;
+                  const badgeH = 13.5;
+                  const bx = node.svgX + node.badgeOffsetX;
+                  const by = node.svgY + node.badgeOffsetY;
 
-                return (
-                  <div
-                    key={node.id}
-                    onClick={() => setSelectedNode(node)}
-                    style={{
-                      left: `${node.xPercent}%`,
-                      top: `${node.yPercent}%`,
-                    }}
-                    className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer group transition-all duration-300 z-20"
-                  >
-                    <div className="relative flex items-center justify-center">
-                      <div
-                        className={`absolute w-10 h-10 rounded-full transition-all duration-300 ${isSelected
-                            ? 'bg-emerald-400/30 scale-125 animate-ping'
-                            : 'bg-cyan-500/10 group-hover:scale-110'
-                          }`}
+                  return (
+                    <g
+                      key={node.id}
+                      onClick={() => setSelectedNode(node)}
+                      className="cursor-pointer group pointer-events-auto"
+                      role="button"
+                      tabIndex={0}
+                    >
+                      {/* Radar Pulse Wave on node anchor */}
+                      <motion.circle
+                        cx={node.svgX}
+                        cy={node.svgY}
+                        r={isSelected ? 9 : 6}
+                        fill="none"
+                        stroke={isSelected ? '#10B981' : '#0EA5E9'}
+                        strokeWidth="0.8"
+                        initial={{ scale: 0.6, opacity: 0.9 }}
+                        animate={{ scale: [0.6, 2.2], opacity: [0.9, 0] }}
+                        transition={{
+                          duration: 2.2,
+                          repeat: Infinity,
+                          ease: 'easeOut',
+                        }}
                       />
 
-                      {/* Inner Node Pill with reduced roundness */}
-                      <div
-                        className={`relative px-2.5 py-1.5 rounded-md flex items-center gap-1.5 backdrop-blur-md shadow-sm transition-all duration-200 ${isSelected
-                            ? 'bg-emerald-600 dark:bg-emerald-500 text-white dark:text-slate-950 scale-105 ring-2 ring-emerald-400/40'
-                            : 'bg-white dark:bg-slate-900/90 text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700/80 group-hover:border-cyan-500 group-hover:scale-105'
-                          }`}
-                      >
-                        <span className="text-xs">{node.flag}</span>
-                        <span className="text-xs font-bold font-mono tracking-tight">
-                          {node.city}
-                        </span>
-                      </div>
-                    </div>
+                      {/* Center Glowing Pin Point */}
+                      <circle
+                        cx={node.svgX}
+                        cy={node.svgY}
+                        r={isSelected ? 3.2 : 2.2}
+                        fill={isSelected ? '#10B981' : '#0EA5E9'}
+                        stroke="#FFFFFF"
+                        strokeWidth="0.8"
+                        filter="url(#meshGlow)"
+                      />
 
-                    {/* Node Mini Metric Badge */}
-                    <div
-                      className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-0.5 rounded-sm text-[10px] font-mono whitespace-nowrap transition-all duration-200 ${isSelected
-                          ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 block'
-                          : 'hidden group-hover:block bg-white dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700'
-                        }`}
-                    >
-                      {node.tps} • {node.latency}
-                    </div>
-                  </div>
-                );
-              })}
+                      {/* Leader Line to Badge if offset is significant */}
+                      {(Math.abs(node.badgeOffsetX) > 8 || Math.abs(node.badgeOffsetY) > 8) && (
+                        <line
+                          x1={node.svgX}
+                          y1={node.svgY}
+                          x2={bx + (node.badgeOffsetX < 0 ? badgeW : 0)}
+                          y2={by + badgeH / 2}
+                          stroke={isSelected ? '#10B981' : 'rgba(148, 163, 184, 0.45)'}
+                          strokeWidth="0.4"
+                          strokeDasharray="1.5 1.5"
+                        />
+                      )}
+
+                      {/* Sleek City Badge Container */}
+                      <rect
+                        x={bx}
+                        y={by}
+                        width={badgeW}
+                        height={badgeH}
+                        rx="3.5"
+                        className={cn(
+                          "transition-all duration-200",
+                          isSelected
+                            ? "fill-emerald-600 dark:fill-emerald-500 stroke-emerald-300 dark:stroke-emerald-200"
+                            : "fill-white/95 dark:fill-slate-900/95 stroke-slate-300 dark:stroke-slate-700/90 group-hover:stroke-cyan-400"
+                        )}
+                        strokeWidth={isSelected ? '0.9' : '0.45'}
+                        filter="url(#badgeShadow)"
+                      />
+
+                      {/* Flag and City Name Label */}
+                      <text
+                        x={bx + badgeW / 2}
+                        y={by + badgeH / 2 + 2}
+                        textAnchor="middle"
+                        fontSize="5.6"
+                        fontWeight="700"
+                        fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
+                        className={cn(
+                          "pointer-events-none select-none",
+                          isSelected
+                            ? "fill-white dark:fill-slate-950 font-extrabold"
+                            : "fill-slate-800 dark:fill-slate-100 font-bold"
+                        )}
+                      >
+                        {node.flag} {node.city}
+                      </text>
+
+                      {/* Active Sub-Badge Indicator for Selected Node */}
+                      {isSelected && (
+                        <g className="pointer-events-none">
+                          <rect
+                            x={bx}
+                            y={by + badgeH + 1.4}
+                            width={badgeW}
+                            height="8"
+                            rx="2"
+                            fill="rgba(16, 185, 129, 0.16)"
+                            stroke="rgba(16, 185, 129, 0.5)"
+                            strokeWidth="0.4"
+                          />
+                          <text
+                            x={bx + badgeW / 2}
+                            y={by + badgeH + 6.8}
+                            textAnchor="middle"
+                            fontSize="4"
+                            fontWeight="700"
+                            fontFamily="monospace"
+                            fill="#10B981"
+                          >
+                            {node.tps} • {node.latency}
+                          </text>
+                        </g>
+                      )}
+                    </g>
+                  );
+                })}
+
+              </svg>
 
             </div>
 
