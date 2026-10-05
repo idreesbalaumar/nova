@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react';
 import { cn } from '@/modules/shared/utils/cn';
 import { RECENT_TRANSACTIONS, Transaction } from '@/data/novaData';
 import { NewTransferModal } from './components/NewTransferModal';
+import { DashboardTab } from './DashboardLayout';
 import {
   AreaChart,
   Area,
@@ -12,6 +13,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts';
+import { toast } from 'sonner';
 
 export interface DashboardPageProps {
   user: {
@@ -22,9 +24,11 @@ export interface DashboardPageProps {
   };
   onSelectTransaction: (tx: Transaction) => void;
   onOpenSandbox?: () => void;
+  activeTab?: DashboardTab;
+  setActiveTab?: (tab: DashboardTab) => void;
 }
 
-// Chart dataset with 7 days & 24h data points
+// Chart datasets for multiple timeframes
 const CHART_DATA_24H = [
   { time: '00:00', inflow: 28400, outflow: 12200 },
   { time: '03:00', inflow: 19800, outflow: 8500 },
@@ -53,12 +57,44 @@ const CHART_DATA_30D = [
   { time: 'Week 4', inflow: 4620000, outflow: 1840000 },
 ];
 
-type Timeframe = '24h' | '7d' | '30d';
+const CHART_DATA_90D = [
+  { time: 'Month 1', inflow: 11200000, outflow: 4480000 },
+  { time: 'Month 2', inflow: 14800000, outflow: 5920000 },
+  { time: 'Month 3', inflow: 18450000, outflow: 7380000 },
+];
+
+type Timeframe = '24h' | '7d' | '30d' | '90d';
+
+interface MultiCurrencyWallet {
+  code: string;
+  symbol: string;
+  label: string;
+  flag: string;
+  balance: number;
+  available: number;
+  locked: number;
+  rail: string;
+  dailyChange: string;
+  isPositive: boolean;
+}
+
+interface FinancialActivityItem {
+  id: string;
+  time: string;
+  title: string;
+  description: string;
+  amount: string;
+  type: 'inflow' | 'outflow' | 'swap' | 'compliance';
+  statusBadge: string;
+  flag: string;
+}
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({
   user,
   onSelectTransaction,
   onOpenSandbox,
+  activeTab = 'dashboard',
+  setActiveTab,
 }) => {
   const [now, setNow] = useState(new Date());
   const [timeframe, setTimeframe] = useState<Timeframe>('7d');
@@ -68,12 +104,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
   const [txFilter, setTxFilter] = useState<'all' | 'inflow' | 'outflow' | 'swap'>('all');
   const [transferModalOpen, setTransferModalOpen] = useState(false);
 
-  // Balances
+  // Live Balances State
   const [usdBalance, setUsdBalance] = useState(3842950);
   const [todayInflow, setTodayInflow] = useState(842600);
   const [todayOutflow, setTodayOutflow] = useState(318450);
 
-  // Live timer for welcome banner clock (matching Trackforte Franchise)
+  // Live timer for clock
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
@@ -82,7 +118,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
   const hour = now.getHours();
   const isDaytime = hour >= 6 && hour < 19;
 
-  // Multi-Currency Balance Display Converter
+  // Multi-Currency Overview Rates & Balances
   const CURRENCY_BALANCES = useMemo(
     () => [
       { code: 'USD', symbol: '$', amount: usdBalance, label: 'US Dollar', flag: '🇺🇸' },
@@ -97,10 +133,142 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
   const activeCurrency = CURRENCY_BALANCES[activeCurrencyIndex];
 
+  // Dedicated Regional Multi-Currency Accounts & Wallets
+  const MULTI_CURRENCY_WALLETS: MultiCurrencyWallet[] = useMemo(
+    () => [
+      {
+        code: 'NGN',
+        symbol: '₦',
+        label: 'Nigerian Naira Treasury',
+        flag: '🇳🇬',
+        balance: 5918143000,
+        available: 5200000000,
+        locked: 718143000,
+        rail: 'NIBSS Instant / e-Naira Rail',
+        dailyChange: '+18.4%',
+        isPositive: true,
+      },
+      {
+        code: 'KES',
+        symbol: 'KSh',
+        label: 'Kenyan Shilling Pool',
+        flag: '🇰🇪',
+        balance: 497946000,
+        available: 450000000,
+        locked: 47946000,
+        rail: 'Safaricom M-Pesa / EAPS Rail',
+        dailyChange: '+12.6%',
+        isPositive: true,
+      },
+      {
+        code: 'GHS',
+        symbol: 'GH₵',
+        label: 'Ghanaian Cedi Clearing',
+        flag: '🇬🇭',
+        balance: 58412840,
+        available: 52000000,
+        locked: 6412840,
+        rail: 'GhIPSS Instant Switch',
+        dailyChange: '+8.1%',
+        isPositive: true,
+      },
+      {
+        code: 'ZAR',
+        symbol: 'R',
+        label: 'South African Rand Vault',
+        flag: '🇿🇦',
+        balance: 68596000,
+        available: 64000000,
+        locked: 4596000,
+        rail: 'SARB SIRESS SADC Rail',
+        dailyChange: '+15.2%',
+        isPositive: true,
+      },
+      {
+        code: 'USD',
+        symbol: '$',
+        label: 'US Dollar Global Buffer',
+        flag: '🇺🇸',
+        balance: usdBalance,
+        available: usdBalance - 342950,
+        locked: 342950,
+        rail: 'FedNow / Clearing House CHIPS',
+        dailyChange: '+22.4%',
+        isPositive: true,
+      },
+      {
+        code: 'GBP',
+        symbol: '£',
+        label: 'British Pound Gateway',
+        flag: '🇬🇧',
+        balance: 2997500,
+        available: 2850000,
+        locked: 147500,
+        rail: 'Faster Payments (FPS) / CHAPS',
+        dailyChange: '+9.7%',
+        isPositive: true,
+      },
+    ],
+    [usdBalance]
+  );
+
+  // Live Financial Activity Stream Items
+  const FINANCIAL_ACTIVITIES: FinancialActivityItem[] = [
+    {
+      id: 'act-1',
+      time: '2 mins ago',
+      title: 'Inbound Settlement Cleared',
+      description: 'Flutterwave Lagos Gateway settled merchant volume via NIBSS Core',
+      amount: '+₦45,000,000.00',
+      type: 'inflow',
+      statusBadge: 'Verified',
+      flag: '🇳🇬',
+    },
+    {
+      id: 'act-2',
+      time: '8 mins ago',
+      title: 'Bulk Mobile Money Disbursal',
+      description: 'Safaricom M-Pesa batch payout completed across 280 retail agents',
+      amount: '-KSh 8,400,000.00',
+      type: 'outflow',
+      statusBadge: 'Sub-second',
+      flag: '🇰🇪',
+    },
+    {
+      id: 'act-3',
+      time: '19 mins ago',
+      title: 'Cross-Border FX Liquidity Swap',
+      description: 'Barclays London treasury conduit cleared into Accra Cedi pool',
+      amount: '+GH₵ 1,824,000.00',
+      type: 'swap',
+      statusBadge: 'Audited',
+      flag: '🇬🇧 ➔ 🇬🇭',
+    },
+    {
+      id: 'act-4',
+      time: '34 mins ago',
+      title: 'Statutory Compliance Stamped',
+      description: 'CBN Form A electronic foreign exchange filing certified with Merkle proof',
+      amount: 'N/A',
+      type: 'compliance',
+      statusBadge: 'Statutory',
+      flag: '🏛️',
+    },
+    {
+      id: 'act-5',
+      time: '52 mins ago',
+      title: 'Institutional Liquidity Sweep',
+      description: 'Standard Bank Johannesburg rebalanced southern corridor reserves',
+      amount: '+R 2,800,000.00',
+      type: 'inflow',
+      statusBadge: 'Settled',
+      flag: '🇿🇦',
+    },
+  ];
+
   // Handle transfer success
   const handleTransferSuccess = (newTx: Transaction, numericAmount: number, sourceCurrency: string) => {
     setTransactions((prev) => [newTx, ...prev]);
-    // Deduct amount
     if (sourceCurrency === 'USD') {
       setUsdBalance((prev) => prev - numericAmount);
     } else {
@@ -108,6 +276,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
     }
     setTodayOutflow((prev) => prev + numericAmount);
     onSelectTransaction(newTx);
+    toast.success(`Settlement ${newTx.id.toUpperCase()} successfully broadcast to network.`);
   };
 
   // Filtered transactions
@@ -123,7 +292,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
     if (!matchesSearch) return false;
 
     if (txFilter === 'inflow') {
-      return destCurr === 'NGN' || destCurr === 'KES';
+      return destCurr === 'NGN' || destCurr === 'KES' || destCurr === 'GHS';
     }
     if (txFilter === 'outflow') {
       return tx.sourceCurrency === 'USD' || tx.sourceCurrency === 'GBP';
@@ -134,8 +303,25 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
     return true;
   });
 
+  // Chart data based on timeframe
   const chartData =
-    timeframe === '24h' ? CHART_DATA_24H : timeframe === '7d' ? CHART_DATA_7D : CHART_DATA_30D;
+    timeframe === '24h'
+      ? CHART_DATA_24H
+      : timeframe === '7d'
+      ? CHART_DATA_7D
+      : timeframe === '30d'
+      ? CHART_DATA_30D
+      : CHART_DATA_90D;
+
+  const totalInflowInPeriod = useMemo(
+    () => chartData.reduce((acc, curr) => acc + curr.inflow, 0),
+    [chartData]
+  );
+  const totalOutflowInPeriod = useMemo(
+    () => chartData.reduce((acc, curr) => acc + curr.outflow, 0),
+    [chartData]
+  );
+  const netPosition = totalInflowInPeriod - totalOutflowInPeriod;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 font-sans pb-12">
@@ -160,13 +346,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             <div>
               <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-semibold text-amber-300 mb-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                <span>All Systems Operational • 28ms Avg Mesh Latency</span>
+                <span>Pan-African Mesh Active • 28ms Avg Latency</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
                 Welcome back, {user.name} 👋🏾
               </h2>
               <p className="text-xs sm:text-[13px] text-slate-300/80 mt-1 leading-relaxed max-w-xl">
-                {user.organization || 'Afrigate Commerce'} • Pan-African Treasury & Liquidity Operating Console
+                {user.organization || 'Afrigate Commerce'} • Pan-African Treasury, Settlements & Liquidity Console
               </p>
             </div>
 
@@ -200,9 +386,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         </div>
       </div>
 
-      {/* ── 2. Financial Metrics & Balance Grid ── */}
+      {/* ── 2. Financial Metrics & Core KPI Grid (Balances, Revenue, Spending, Savings) ── */}
       <div id="stats-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Multi-Currency Balance */}
+        {/* Card 1: Multi-Currency Total Treasury Balance */}
         <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
           <div className="flex items-start justify-between">
             <div className="h-10 w-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
@@ -225,6 +411,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 maximumFractionDigits: 2,
               })}
             </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+              Available: ${(usdBalance - 342950).toLocaleString()} • In Escrow: $342,950
+            </p>
           </div>
 
           {/* Quick Currency Switcher Pills */}
@@ -247,7 +436,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           </div>
         </div>
 
-        {/* Card 2: 24h Revenue / Inflows */}
+        {/* Card 2: Revenue / Inflows */}
         <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
           <div className="flex items-start justify-between">
             <div className="h-10 w-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400">
@@ -255,46 +444,46 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             </div>
             <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md">
               <Icon icon="solar:arrow-right-up-linear" className="w-3 h-3" />
-              +24.2%
+              +24.2% MoM
             </span>
           </div>
           <div className="mt-3">
             <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              24h Inflow / Settlements
+              Total Revenue / Inflow
             </p>
             <div className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-1 tracking-tight font-mono tabular-nums">
               ${todayInflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              1,284 incoming merchant settlements
+              1,284 incoming merchant settlements today
             </p>
           </div>
         </div>
 
-        {/* Card 3: 24h Disbursements / Outflows */}
+        {/* Card 3: Spending / Disbursements */}
         <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
           <div className="flex items-start justify-between">
             <div className="h-10 w-10 rounded-xl bg-cyan-50 dark:bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
               <Icon icon="solar:card-send-bold-duotone" className="w-5 h-5" />
             </div>
             <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 font-mono">
-              0.38s avg
+              0.38s avg delivery
             </span>
           </div>
           <div className="mt-3">
             <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              24h Outflow / Payouts
+              Total Spending / Outflow
             </p>
             <div className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-1 tracking-tight font-mono tabular-nums">
               ${todayOutflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Sub-second mobile money & bank delivery
+              Direct mobile money & bank delivery
             </p>
           </div>
         </div>
 
-        {/* Card 4: Spread Savings */}
+        {/* Card 4: Net Position & FX Savings */}
         <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
           <div className="flex items-start justify-between">
             <div className="h-10 w-10 rounded-xl bg-violet-50 dark:bg-violet-500/10 flex items-center justify-center text-violet-600 dark:text-violet-400">
@@ -306,19 +495,95 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           </div>
           <div className="mt-3">
             <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              FX Spread Savings (Month)
+              Net Cashflow Position
             </p>
-            <div className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-1 tracking-tight font-mono tabular-nums">
-              $42,180.00
+            <div className="text-xl sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1 tracking-tight font-mono tabular-nums">
+              +${(todayInflow - todayOutflow).toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Saved vs traditional correspondent banks
+              $42,180.00 saved vs traditional correspondent banks
             </p>
           </div>
         </div>
       </div>
 
-      {/* ── 3. Charts & Visualizations Row ── */}
+      {/* ── 3. Multi-Currency Accounts & Wallets (Direct Account Balance Breakdown) ── */}
+      <div id="wallets-section" className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-5 bg-gradient-to-b from-amber-500 to-emerald-600 rounded-full" />
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              Multi-Currency Regional Accounts & Balances
+            </h3>
+          </div>
+          <span className="text-xs text-slate-500 font-mono">
+            Direct Inter-Switch Clearing • Real-Time FX
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {MULTI_CURRENCY_WALLETS.map((wallet) => (
+            <div
+              key={wallet.code}
+              className="bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs hover:border-amber-500/40 dark:hover:border-amber-500/40 transition-all flex flex-col justify-between space-y-4 group"
+            >
+              <div>
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl p-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl">{wallet.flag}</span>
+                    <div>
+                      <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <span>{wallet.code}</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      </h4>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">{wallet.label}</p>
+                    </div>
+                  </div>
+                  <span className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md">
+                    {wallet.dailyChange}
+                  </span>
+                </div>
+
+                <div className="mt-4 space-y-1">
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Total Balance</span>
+                  <div className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white font-mono tabular-nums">
+                    {wallet.symbol}{wallet.balance.toLocaleString()}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px]">
+                  <div>
+                    <span className="text-slate-400 block text-[10px]">Available</span>
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">
+                      {wallet.symbol}{wallet.available.toLocaleString()}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block text-[10px]">In Clearing</span>
+                    <span className="font-medium text-slate-600 dark:text-slate-300 font-mono">
+                      {wallet.symbol}{wallet.locked.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 text-xs">
+                <span className="text-[10px] text-slate-400 font-mono truncate max-w-[170px]">
+                  {wallet.rail}
+                </span>
+                <button
+                  onClick={() => setTransferModalOpen(true)}
+                  className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-amber-500 hover:text-white text-[11px] font-bold transition-colors cursor-pointer"
+                >
+                  Transfer
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── 4. Charts & Visualizations (Revenue / Spending Trends & Corridor Liquidity) ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Chart: Revenue & Outflow Trends */}
         <div className="lg:col-span-2 bg-white dark:bg-slate-900/90 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
@@ -326,7 +591,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             <div>
               <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <span className="w-1.5 h-4 rounded-full bg-emerald-500" />
-                Revenue & Outflow Velocity
+                Revenue vs Spending Cashflow Velocity
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Real-time settlement throughput across all bilateral African corridors
@@ -335,7 +600,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
             {/* Timeframe selector */}
             <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl self-start sm:self-auto">
-              {(['24h', '7d', '30d'] as Timeframe[]).map((tf) => (
+              {(['24h', '7d', '30d', '90d'] as Timeframe[]).map((tf) => (
                 <button
                   key={tf}
                   onClick={() => setTimeframe(tf)}
@@ -346,7 +611,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                       : 'text-slate-500 dark:text-slate-400 hover:text-slate-800'
                   )}
                 >
-                  {tf === '24h' ? '24 Hours' : tf === '7d' ? '7 Days' : '30 Days'}
+                  {tf === '24h' ? '24h' : tf === '7d' ? '7d' : tf === '30d' ? '30d' : '90d'}
                 </button>
               ))}
             </div>
@@ -377,14 +642,24 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 <Tooltip
                   content={({ active, payload, label }) => {
                     if (active && payload && payload.length) {
+                      const inVal = payload[0].value as number;
+                      const outVal = payload[1].value as number;
                       return (
-                        <div className="bg-slate-900 text-white p-3 rounded-xl shadow-xl text-xs font-mono space-y-1 border border-slate-700">
-                          <p className="font-bold text-slate-300">{label}</p>
-                          <p className="text-emerald-400">
-                            Inflow: ${(payload[0].value as number)?.toLocaleString()}
+                        <div className="bg-slate-900 text-white p-3 rounded-xl shadow-xl text-xs font-mono space-y-1.5 border border-slate-700">
+                          <p className="font-bold text-slate-300 border-b border-slate-800 pb-1">{label}</p>
+                          <p className="text-emerald-400 flex items-center justify-between gap-4">
+                            <span>Revenue (Inflow):</span>
+                            <span>${inVal?.toLocaleString()}</span>
                           </p>
-                          <p className="text-amber-400">
-                            Outflow: ${(payload[1].value as number)?.toLocaleString()}
+                          <p className="text-amber-400 flex items-center justify-between gap-4">
+                            <span>Spending (Outflow):</span>
+                            <span>${outVal?.toLocaleString()}</span>
+                          </p>
+                          <p className="text-slate-300 flex items-center justify-between gap-4 pt-1 border-t border-slate-800">
+                            <span>Net Position:</span>
+                            <span className={inVal >= outVal ? 'text-emerald-400' : 'text-red-400'}>
+                              +${(inVal - outVal)?.toLocaleString()}
+                            </span>
                           </p>
                         </div>
                       );
@@ -414,25 +689,31 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             </ResponsiveContainer>
           </div>
 
-          <div className="flex items-center justify-center gap-6 pt-2 text-xs font-semibold">
-            <span className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-              <span className="w-3 h-3 rounded-full bg-emerald-500" />
-              Settlement Inflows (+Credits)
-            </span>
-            <span className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-              <span className="w-3 h-3 rounded-full bg-amber-500" />
-              Merchant Payouts (-Disbursals)
-            </span>
+          <div className="flex flex-wrap items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+            <div className="flex items-center gap-6 font-semibold">
+              <span className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <span className="w-3 h-3 rounded-full bg-emerald-500" />
+                Revenue Inflows (+Credits)
+              </span>
+              <span className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <span className="w-3 h-3 rounded-full bg-amber-500" />
+                Disbursements / Spending (-Debits)
+              </span>
+            </div>
+
+            <div className="text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+              Period Net: <strong className="text-emerald-600 dark:text-emerald-400">+${netPosition.toLocaleString()}</strong>
+            </div>
           </div>
         </div>
 
-        {/* Side Card: Corridor Liquidity Distribution */}
+        {/* Side Card: Corridor Liquidity Distribution Visualizer */}
         <div className="bg-white dark:bg-slate-900/90 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <span className="w-1.5 h-4 rounded-full bg-amber-500" />
-                Active Corridors Share
+                Corridor Allocation Volume
               </h3>
               <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
                 100% Uptime
@@ -477,14 +758,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         </div>
       </div>
 
-      {/* ── 4. Main Activity & Insights Grid ── */}
+      {/* ── 5. Main Activity & Insights Grid (Transactions + Live Feed + AI Insights) ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Recent Financial Transactions Table (2 Cols) */}
         <div id="recent-orders-card" className="lg:col-span-2 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <span className="w-1.5 h-5 bg-gradient-to-b from-amber-500 to-emerald-600 rounded-full" />
-              Financial Activity Stream
+              Transactions & Settlement Stream
             </h2>
 
             {/* Filter Tabs matching Trackforte */}
@@ -608,7 +889,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           </div>
         </div>
 
-        {/* Right Column: Quick CTA, Insights & Quick Links (Matching Trackforte Franchise) */}
+        {/* Right Column: Instant Transfer CTA, Financial Insights & Live Activity Feed */}
         <div className="space-y-6">
           {/* Quick Settlement CTA Card (Matching Trackforte's "Need more items? Create order" card) */}
           <div
@@ -671,19 +952,74 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 </p>
               </div>
 
+              <div className="p-3 rounded-xl bg-cyan-50/60 dark:bg-cyan-950/20 border border-cyan-200/60 dark:border-cyan-800/40 space-y-1">
+                <div className="flex items-center gap-1.5 font-bold text-cyan-900 dark:text-cyan-300">
+                  <Icon icon="solar:refresh-circle-bold" className="w-3.5 h-3.5 text-cyan-600" />
+                  <span>Liquidity Rebalancing Alert</span>
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  East Africa pool (Nairobi hub) is at 82% utilization. Suggested action: move $250k from USD global buffer to KES mobile money reserve.
+                </p>
+              </div>
+
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 space-y-1">
                 <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">
-                  <Icon icon="solar:document-text-bold" className="w-3.5 h-3.5 text-cyan-500" />
+                  <Icon icon="solar:document-text-bold" className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" />
                   <span>Statutory Compliance Attached</span>
                 </div>
                 <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                  CBN Form A and Kenya Revenue Authority e-invoicing declarations are automatically archived and cryptographically stamped.
+                  CBN Form A and Kenya Revenue Authority e-TIMS electronic declarations are automatically archived and cryptographically stamped.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Quick Links Card (Directly from Trackforte Franchise) */}
+          {/* Live Financial Activity Feed */}
+          <div className="bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs p-5 space-y-3.5">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Live Financial Activity Feed</span>
+              </h3>
+              <span className="text-[10px] text-slate-400 font-mono">Syncing 60Hz</span>
+            </div>
+
+            <div className="space-y-3">
+              {FINANCIAL_ACTIVITIES.map((act) => (
+                <div
+                  key={act.id}
+                  className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                >
+                  <span className="text-base p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg shrink-0">
+                    {act.flag}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-1">
+                      <p className="text-xs font-bold text-slate-800 dark:text-white truncate">
+                        {act.title}
+                      </p>
+                      <span className="text-[10px] text-slate-400 font-mono shrink-0">
+                        {act.time}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-0.5">
+                      {act.description}
+                    </p>
+                    <div className="flex items-center justify-between mt-1 text-[10px] font-mono">
+                      <span className={cn('font-bold', act.type === 'inflow' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300')}>
+                        {act.amount}
+                      </span>
+                      <span className="px-1.5 py-0.2 bg-slate-100 dark:bg-slate-800 rounded text-slate-500 font-sans">
+                        {act.statusBadge}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Shortcuts Card (Directly from Trackforte Franchise) */}
           <div id="quick-links-card" className="bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
             <div className="px-5 pt-4 pb-2 border-b border-slate-100 dark:border-slate-800">
               <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
@@ -752,7 +1088,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         </div>
       </div>
 
-      {/* ── 5. Interactive Transfer Modal ── */}
+      {/* ── 6. Interactive Transfer Modal ── */}
       <NewTransferModal
         isOpen={transferModalOpen}
         onClose={() => setTransferModalOpen(false)}

@@ -5,6 +5,8 @@ import { NotificationPopover } from './components/NotificationPopover';
 import { UserNav } from './components/UserNav';
 import { cn } from '@/modules/shared/utils/cn';
 
+export type DashboardTab = 'dashboard' | 'balances' | 'transactions' | 'revenue' | 'insights';
+
 export interface DashboardLayoutProps {
   user: {
     name: string;
@@ -14,6 +16,8 @@ export interface DashboardLayoutProps {
   };
   onSignOut: () => void;
   onNavigateHome: () => void;
+  activeTab?: DashboardTab;
+  onSelectTab?: (tab: DashboardTab) => void;
   children: React.ReactNode;
 }
 
@@ -21,9 +25,13 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   user,
   onSignOut,
   onNavigateHome,
+  activeTab: externalTab,
+  onSelectTab: externalSetTab,
   children,
 }) => {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'settlements' | 'corridors' | 'wallets' | 'insights'>('dashboard');
+  const [internalTab, setInternalTab] = useState<DashboardTab>('dashboard');
+  const activeTab = externalTab !== undefined ? externalTab : internalTab;
+  const setActiveTab = externalSetTab !== undefined ? externalSetTab : setInternalTab;
   const [isDark, setIsDark] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -45,11 +53,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   };
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: 'solar:widget-bold-duotone' },
-    { id: 'settlements', label: 'Settlements & Payouts', icon: 'solar:card-send-bold-duotone' },
-    { id: 'corridors', label: 'Corridors & FX', icon: 'solar:routing-2-bold-duotone' },
-    { id: 'wallets', label: 'Multi-Currency Wallets', icon: 'solar:wallet-money-bold-duotone' },
-    { id: 'insights', label: 'AI Intelligence', icon: 'solar:chart-square-bold-duotone' },
+    { id: 'dashboard' as const, label: 'Dashboard', icon: 'solar:widget-bold-duotone' },
+    { id: 'balances' as const, label: 'Account Balances', icon: 'solar:wallet-money-bold-duotone' },
+    { id: 'transactions' as const, label: 'Transactions', icon: 'solar:card-send-bold-duotone' },
+    { id: 'revenue' as const, label: 'Revenue & Spending', icon: 'solar:chart-2-bold-duotone' },
+    { id: 'insights' as const, label: 'Financial Insights', icon: 'solar:stars-bold-duotone' },
   ];
 
   return (
@@ -80,7 +88,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               {navItems.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => setActiveTab(item.id as any)}
+                  onClick={() => setActiveTab(item.id)}
                   className={cn(
                     'flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer',
                     activeTab === item.id
@@ -147,7 +155,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               <button
                 key={item.id}
                 onClick={() => {
-                  setActiveTab(item.id as any);
+                  setActiveTab(item.id);
                   setMobileMenuOpen(false);
                 }}
                 className={cn(
@@ -177,20 +185,29 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             <span>NOVA</span>
           </button>
           <span>/</span>
-          <span className="text-slate-600 dark:text-slate-300 font-bold">
+          <button
+            onClick={() => setActiveTab('dashboard')}
+            className="hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+          >
+            Treasury
+          </button>
+          <span>/</span>
+          <span className="text-slate-700 dark:text-slate-200 font-bold">
             {activeTab === 'dashboard'
-              ? 'Treasury Operations'
-              : activeTab === 'settlements'
-              ? 'Settlements & Payouts'
-              : activeTab === 'corridors'
-              ? 'African Corridors'
-              : activeTab === 'wallets'
-              ? 'Multi-Currency Wallets'
-              : 'AI Intelligence'}
+              ? 'Executive Command Center'
+              : activeTab === 'balances'
+              ? 'Multi-Currency Accounts'
+              : activeTab === 'transactions'
+              ? 'Settlement Stream & Ledger'
+              : activeTab === 'revenue'
+              ? 'Revenue & Cashflow Analytics'
+              : 'AI Intelligence & Insights'}
           </span>
         </nav>
 
-        {children}
+        {React.isValidElement(children)
+          ? React.cloneElement(children as React.ReactElement<any>, { activeTab, setActiveTab })
+          : children}
       </main>
 
       {/* ── Footer (Trackforte Style) ── */}
