@@ -91,7 +91,7 @@ export const FinancialIntelligenceSection: React.FC<FinancialIntelligenceSection
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-semibold text-cyan-700 dark:text-cyan-400 mb-2.5">
-              <Layers className="w-3.5 h-3.5" />
+              <Icon icon="solar:layers-bold" className="w-3.5 h-3.5" />
               <span>REAL-TIME TREASURY INTELLIGENCE</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-950 dark:text-white tracking-tight">
@@ -402,7 +402,7 @@ export const FinancialIntelligenceSection: React.FC<FinancialIntelligenceSection
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
             <div>
               <h3 className="text-base font-bold text-slate-950 dark:text-white flex items-center gap-2">
-                <Wallet className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <Icon icon="solar:wallet-bold" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 Enterprise Transaction Ledger
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">

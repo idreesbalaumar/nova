@@ -20,8 +20,10 @@ export default function App() {
 
   // Initial simulated route hydration matching CarePortal
   useEffect(() => {
+    window.scrollTo(0, 0);
     const timer = setTimeout(() => {
       setIsInitialLoading(false);
+      window.scrollTo(0, 0);
     }, 900);
     return () => clearTimeout(timer);
   }, []);

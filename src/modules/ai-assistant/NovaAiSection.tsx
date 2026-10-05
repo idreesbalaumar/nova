@@ -41,12 +41,23 @@ export const NovaAiSection: React.FC = () => {
   ]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef(true);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
   };
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     scrollToBottom();
   }, [messages, isTyping]);
 
@@ -236,7 +247,7 @@ export const NovaAiSection: React.FC = () => {
           </div>
 
           {/* Conversation Feed */}
-          <div className="p-5 space-y-5 max-h-[440px] overflow-y-auto">
+          <div ref={chatContainerRef} className="p-5 space-y-5 max-h-[440px] overflow-y-auto">
             {messages.map((msg) => (
               <div
                 key={msg.id}
