@@ -159,10 +159,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({
 
           {/* Value Proposition Highlights */}
           <div className="px-8 space-y-4 my-auto">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs text-amber-300 font-medium">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Live Pan-African Settlement Rails</span>
-            </div>
 
             <h1 className="text-2xl xl:text-3xl font-bold text-white tracking-tight leading-snug">
               Africa's Unified <br />
@@ -176,7 +172,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             </p>
 
             {/* Currency Pill Chips */}
-            <div className="flex flex-wrap gap-1.5 pt-1">
+            {/* <div className="flex flex-wrap gap-1.5 pt-1">
               {[
                 { code: 'NGN', label: '₦ Lagos' },
                 { code: 'KES', label: 'KSh Nairobi' },
@@ -192,7 +188,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                   {c.label}
                 </span>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* Testimonial Glass Card at Bottom (Matching Charity Grants HQ) */}
@@ -203,21 +199,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({
               transition={{ duration: 0.65, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
               className="backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl p-6 shadow-2xl text-white"
             >
-              <div className="flex items-center gap-2 mb-3">
+              {/* <div className="flex items-center gap-2 mb-3">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/30 text-emerald-300 border border-emerald-400/40">
                   <Icon icon="solar:verified-check-bold" className="h-3.5 w-3.5" />
                 </span>
                 <span className="text-[10.5px] font-bold uppercase tracking-wider text-emerald-300">
                   Verified Merchant Partner
                 </span>
-              </div>
+              </div> */}
               <blockquote className="space-y-3">
                 <p className="text-xs sm:text-[13px] font-normal leading-relaxed text-white/95">
                   &ldquo;NOVA unified our multi-currency treasury across Lagos, Nairobi, and London. Cross-border settlements that previously took days now clear in under two seconds with zero hidden conversion spread.&rdquo;
                 </p>
-                <footer className="pt-2 border-t border-white/15 text-[11px] text-white/70 flex items-center justify-between">
+                <footer className="pt-2 text-[11px] text-white/70 flex items-center justify-between">
                   <span>&mdash; Amara Okonkwo</span>
-                  <span className="text-amber-300 font-semibold">Afrigate Commerce</span>
+                  {/* <span className="text-amber-300 font-semibold">Afrigate Commerce</span> */}
                 </footer>
               </blockquote>
             </motion.div>
@@ -480,21 +476,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                   Open an Account
                 </button>
               </p>
-            </div>
-
-            {/* Security Guarantee Badges */}
-            <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-center gap-4 text-[11px] text-slate-400 dark:text-slate-500">
-              <span className="inline-flex items-center gap-1">
-                <Icon icon="solar:shield-check-bold" className="w-3.5 h-3.5 text-emerald-500" />
-                256-Bit Bank Grade SSL
-              </span>
-              <span>•</span>
-              <span className="inline-flex items-center gap-1">
-                <Icon icon="solar:lock-bold" className="w-3.5 h-3.5 text-amber-500" />
-                SOC-2 & ISO 27001
-              </span>
-              <span>•</span>
-              <span>NDPR & GDPR</span>
             </div>
           </motion.div>
         </div>

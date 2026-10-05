@@ -468,7 +468,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
 
         {/* Main Step Form Canvas */}
         <div className="flex-1 flex flex-col justify-center items-center px-4 py-8 sm:px-6 md:px-10 lg:px-12 overflow-y-auto">
-          <div className="w-full max-w-lg space-y-6">
+          <div className="w-full max-w-2xl space-y-6">
             {/* Step Progress Line for Mobile & Tablet */}
             <div className="lg:hidden w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden mb-2">
               <div
