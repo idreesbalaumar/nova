@@ -64,27 +64,29 @@ export default {
           foreground: 'hsl(var(--card-foreground))',
         },
       },
+      // Reduced roundness across all scales globally
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-        xl: 'calc(var(--radius) + 4px)',
-        '2xl': 'calc(var(--radius) + 8px)',
-        '3xl': 'calc(var(--radius) + 16px)',
+        none: '0px',
+        sm: '2px',
+        DEFAULT: '4px',
+        md: '6px',
+        lg: '8px',
+        xl: '10px',
+        '2xl': '12px',
+        '3xl': '14px',
       },
       boxShadow: {
         'nova-glow': '0 0 35px -5px rgba(0, 245, 160, 0.25)',
         'nova-cyan-glow': '0 0 35px -5px rgba(0, 210, 255, 0.25)',
         'nova-gold-glow': '0 0 35px -5px rgba(255, 184, 0, 0.25)',
-        'card-elevated': '0 20px 40px -15px rgba(0, 0, 0, 0.5)',
+        'card-elevated': '0 10px 30px -10px rgba(0, 0, 0, 0.1)',
+        'card-elevated-dark': '0 20px 40px -15px rgba(0, 0, 0, 0.5)',
       },
       animation: {
-        'fade-in': 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'fade-in': 'fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-up': 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
         'pulse-subtle': 'pulseSubtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'float-slow': 'floatSlow 6s ease-in-out infinite',
-        'aurora-flow': 'auroraFlow 12s ease infinite alternate',
-        'spin-slow': 'spin 20s linear infinite',
       },
       keyframes: {
         fadeIn: {
@@ -92,7 +94,7 @@ export default {
           to: { opacity: '1' },
         },
         slideUp: {
-          from: { opacity: '0', transform: 'translateY(16px)' },
+          from: { opacity: '0', transform: 'translateY(12px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
         },
         pulseSubtle: {
@@ -101,11 +103,7 @@ export default {
         },
         floatSlow: {
           '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-8px)' },
-        },
-        auroraFlow: {
-          '0%': { backgroundPosition: '0% 50%' },
-          '100%': { backgroundPosition: '100% 50%' },
+          '50%': { transform: 'translateY(-6px)' },
         },
       },
     },

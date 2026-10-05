@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,10 +13,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Synchronous Theme Hydration: Default to Light mode -->
     <script>
       (function() {
         try {
-          const theme = localStorage.getItem('nova_theme') || 'dark';
+          const theme = localStorage.getItem('nova_theme') || 'light';
           if (theme === 'dark') {
             document.documentElement.classList.add('dark');
           } else {
@@ -26,7 +27,7 @@
       })();
     </script>
   </head>
-  <body class="min-h-screen bg-[#060A12] text-slate-100 antialiased selection:bg-emerald-500/20 selection:text-emerald-300">
+  <body class="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#060A12] dark:text-slate-100 antialiased selection:bg-emerald-500/20 selection:text-emerald-700 dark:selection:text-emerald-300">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

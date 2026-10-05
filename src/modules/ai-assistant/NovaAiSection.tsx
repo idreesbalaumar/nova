@@ -7,15 +7,6 @@ import {
   Cpu, 
   Sparkles, 
   Send, 
-  ShieldAlert, 
-  TrendingUp, 
-  CheckCircle2, 
-  ArrowRight, 
-  Zap, 
-  AlertTriangle, 
-  Clock, 
-  Terminal, 
-  CornerDownLeft,
   Bot,
   User,
   RotateCcw
@@ -109,7 +100,6 @@ export const NovaAiSection: React.FC = () => {
 
     setMessages((prev) => [...prev, userMsg]);
 
-    // Generate smart context-aware response
     setTimeout(() => {
       let responseObj: AIPromptSuggestion['response'] = {
         summary: `NOVA AI synthesis complete for query: "${query}". Analysis across 34 African clearing corridors indicates optimal settlement routes and zero systemic liquidity bottlenecks.`,
@@ -151,47 +141,47 @@ export const NovaAiSection: React.FC = () => {
   };
 
   return (
-    <section id="ai-assistant" className="relative py-24 bg-[#080D1A] border-t border-slate-800/80 overflow-hidden">
+    <section id="ai-assistant" className="relative py-20 bg-slate-100/60 dark:bg-[#080D1A] border-t border-slate-200 dark:border-slate-800/80 overflow-hidden transition-colors">
       
-      {/* Background Neural Violet/Emerald Halo */}
+      {/* Background Neural Violet Halo */}
       <div className="absolute top-1/2 right-1/4 w-[700px] h-[500px] bg-gradient-to-tr from-purple-500/10 via-emerald-500/10 to-transparent blur-[140px] rounded-full pointer-events-none -z-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-xs font-semibold text-purple-400 mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-xs font-semibold text-purple-700 dark:text-purple-400 mb-2.5">
               <Cpu className="w-3.5 h-3.5" />
               <span>AUTONOMOUS TREASURY COPILOT</span>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-950 dark:text-white tracking-tight">
               NOVA AI Intelligence
             </h2>
-            <p className="text-slate-400 text-base max-w-xl mt-2">
+            <p className="text-slate-600 dark:text-slate-400 text-sm max-w-xl mt-1.5">
               Deep heuristic modeling trained on pan-African currency velocity, real-time FX market microstructure, and automated fraud prevention.
             </p>
           </div>
 
           {/* Engine Status Tag */}
-          <div className="flex items-center gap-3 bg-slate-900/90 border border-slate-800 p-2.5 rounded-2xl self-start md:self-auto">
-            <span className="relative flex h-2.5 w-2.5">
+          <div className="flex items-center gap-3 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 p-2.5 rounded-lg self-start md:self-auto shadow-sm">
+            <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-purple-500"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
             </span>
             <div className="text-xs">
-              <span className="text-white font-bold block font-mono">Neural Engine v4.2</span>
-              <span className="text-slate-400 text-[11px]">Real-Time Streaming Active</span>
+              <span className="text-slate-900 dark:text-white font-bold block font-mono">Neural Engine v4.2</span>
+              <span className="text-slate-500 dark:text-slate-400 text-[11px]">Real-Time Streaming Active</span>
             </div>
           </div>
         </div>
 
         {/* Preset Prompt Buttons */}
-        <div className="mb-6">
-          <span className="text-xs font-mono uppercase tracking-wider text-slate-400 block mb-3">
+        <div className="mb-5">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-2.5">
             Suggested Intelligence Scenarios (Click to Run)
           </span>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
             {AI_PROMPT_PRESETS.map((preset) => {
               const isSelected = activePreset.id === preset.id;
 
@@ -199,22 +189,22 @@ export const NovaAiSection: React.FC = () => {
                 <button
                   key={preset.id}
                   onClick={() => handleSelectPreset(preset)}
-                  className={`p-3.5 rounded-2xl text-left border transition-all duration-200 backdrop-blur-md group ${
+                  className={`p-3 rounded-lg text-left border transition-all duration-200 group ${
                     isSelected
-                      ? 'bg-purple-950/40 border-purple-500/60 shadow-lg shadow-purple-500/10 scale-[1.01]'
-                      : 'bg-slate-900/60 border-slate-800 hover:bg-slate-900 hover:border-slate-700'
+                      ? 'bg-purple-50 dark:bg-purple-950/40 border-purple-400 dark:border-purple-500/60 shadow-sm ring-1 ring-purple-400'
+                      : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded-sm bg-purple-500/10 text-purple-700 dark:text-purple-300">
                       {preset.category}
                     </span>
-                    <Sparkles className="w-3.5 h-3.5 text-purple-400 opacity-60 group-hover:opacity-100 transition-opacity" />
+                    <Sparkles className="w-3.5 h-3.5 text-purple-500 opacity-60 group-hover:opacity-100 transition-opacity" />
                   </div>
-                  <h4 className="text-xs font-bold text-white group-hover:text-purple-300 transition-colors">
+                  <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors">
                     {preset.title}
                   </h4>
-                  <p className="text-[11px] text-slate-400 line-clamp-2 mt-1 leading-snug">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-0.5 leading-snug">
                     {preset.prompt}
                   </p>
                 </button>
@@ -224,17 +214,17 @@ export const NovaAiSection: React.FC = () => {
         </div>
 
         {/* Interactive Chat Console Window */}
-        <div className="rounded-3xl bg-slate-900/90 border border-white/10 shadow-2xl overflow-hidden backdrop-blur-2xl">
+        <div className="rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-sm dark:shadow-2xl overflow-hidden backdrop-blur-2xl">
           
           {/* Terminal Top Bar */}
-          <div className="px-6 py-4 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="px-5 py-3 bg-slate-50 dark:bg-slate-950/80 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
               <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-rose-500/80" />
-                <div className="w-3 h-3 rounded-full bg-amber-500/80" />
-                <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+                <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
               </div>
-              <span className="text-xs font-mono text-slate-400 border-l border-slate-800 pl-3">
+              <span className="text-xs font-mono text-slate-500 dark:text-slate-400 border-l border-slate-200 dark:border-slate-800 pl-3">
                 nova-ai-console ~ session_id: pan_africa_treasury_01
               </span>
             </div>
@@ -244,7 +234,7 @@ export const NovaAiSection: React.FC = () => {
                 setMessages([messages[0]]);
                 toast.info('Chat session history reset.');
               }}
-              className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 text-xs flex items-center gap-1 transition-colors"
+              className="text-slate-500 hover:text-slate-900 dark:hover:text-white p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs flex items-center gap-1 transition-colors"
               title="Reset conversation"
             >
               <RotateCcw className="w-3 h-3" />
@@ -253,79 +243,74 @@ export const NovaAiSection: React.FC = () => {
           </div>
 
           {/* Conversation Feed */}
-          <div className="p-6 space-y-6 max-h-[480px] overflow-y-auto">
+          <div className="p-5 space-y-5 max-h-[440px] overflow-y-auto">
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex gap-3.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                {/* Assistant Avatar */}
                 {msg.sender === 'assistant' && (
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-purple-500 to-cyan-500 p-[1.5px] flex-shrink-0 mt-0.5">
-                    <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                      <Bot className="w-4 h-4 text-purple-300" />
+                  <div className="w-7 h-7 rounded-md bg-gradient-to-tr from-purple-500 to-cyan-500 p-[1px] flex-shrink-0 mt-0.5">
+                    <div className="w-full h-full bg-slate-900 rounded-[5px] flex items-center justify-center">
+                      <Bot className="w-3.5 h-3.5 text-purple-300" />
                     </div>
                   </div>
                 )}
 
-                {/* Message Body */}
                 <div
-                  className={`max-w-2xl rounded-2xl p-4 text-sm leading-relaxed ${
+                  className={`max-w-2xl rounded-lg p-3.5 text-xs leading-relaxed ${
                     msg.sender === 'user'
-                      ? 'bg-purple-600/30 border border-purple-500/40 text-white shadow-lg'
-                      : 'bg-slate-950/70 border border-slate-800 text-slate-200 shadow-md'
+                      ? 'bg-purple-600 text-white shadow-sm'
+                      : 'bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 shadow-sm'
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-4 mb-1.5 text-[11px] font-mono opacity-60">
+                  <div className="flex items-center justify-between gap-4 mb-1 text-[10px] font-mono opacity-60">
                     <span>{msg.sender === 'user' ? 'Treasury Director' : 'NOVA Copilot'}</span>
                     <span>{msg.timestamp}</span>
                   </div>
 
-                  <p className="whitespace-pre-line text-sm">{msg.content}</p>
+                  <p className="whitespace-pre-line text-xs">{msg.content}</p>
 
-                  {/* Rich Data Card for Assistant */}
+                  {/* Rich Data Card */}
                   {msg.data && (
-                    <div className="mt-4 pt-4 border-t border-slate-800/80 space-y-3">
+                    <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-800/80 space-y-2.5">
                       
-                      {/* Risk & Impact Metrics Header */}
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-slate-400">Heuristic Risk:</span>
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400">Heuristic Risk:</span>
                           <span
-                            className={`px-2 py-0.5 rounded text-[11px] font-bold font-mono ${
+                            className={`px-1.5 py-0.5 rounded-sm text-[10px] font-bold font-mono ${
                               msg.data.riskScore === 'Low'
-                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20'
                                 : msg.data.riskScore === 'Medium'
-                                ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                                : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20'
+                                : 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20'
                             }`}
                           >
                             {msg.data.riskScore.toUpperCase()}
                           </span>
                         </div>
-                        <span className="text-xs font-semibold text-emerald-300 font-mono">
+                        <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 font-mono">
                           {msg.data.impactMetric}
                         </span>
                       </div>
 
-                      {/* Bulleted Insights */}
-                      <ul className="space-y-1.5 text-xs text-slate-300 pl-1">
+                      <ul className="space-y-1 text-[11px] text-slate-600 dark:text-slate-300 pl-0.5">
                         {msg.data.details.map((detail, idx) => (
-                          <li key={idx} className="flex items-start gap-2">
-                            <span className="text-purple-400 mt-1">•</span>
+                          <li key={idx} className="flex items-start gap-1.5">
+                            <span className="text-purple-500 mt-0.5">•</span>
                             <span>{detail}</span>
                           </li>
                         ))}
                       </ul>
 
-                      {/* Actionable Trigger */}
-                      <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-                        <span className="text-xs text-slate-300 font-medium">
+                      <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 bg-white dark:bg-slate-900/60 p-2.5 rounded-md border border-slate-200 dark:border-slate-800">
+                        <span className="text-[11px] text-slate-700 dark:text-slate-300 font-medium">
                           {msg.data.recommendedAction}
                         </span>
                         <button
                           onClick={() => handleActionExecute(msg.data!.actionButtonText)}
-                          className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-950 bg-gradient-to-r from-purple-400 to-emerald-400 hover:from-purple-300 hover:to-emerald-300 transition-all shadow-md active:scale-95 flex-shrink-0"
+                          className="px-3 py-1 rounded text-xs font-bold text-slate-950 bg-gradient-to-r from-purple-400 to-emerald-400 hover:from-purple-300 hover:to-emerald-300 transition-all shadow-sm active:scale-95 flex-shrink-0"
                         >
                           {msg.data.actionButtonText}
                         </button>
@@ -335,26 +320,24 @@ export const NovaAiSection: React.FC = () => {
                   )}
                 </div>
 
-                {/* User Avatar */}
                 {msg.sender === 'user' && (
-                  <div className="w-8 h-8 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <User className="w-4 h-4 text-slate-300" />
+                  <div className="w-7 h-7 rounded-md bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <User className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
                   </div>
                 )}
               </div>
             ))}
 
-            {/* Simulated Typing Indicator */}
             {isTyping && (
-              <div className="flex gap-3 items-center text-slate-400 text-xs font-mono">
-                <div className="w-8 h-8 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center">
-                  <Bot className="w-4 h-4 text-purple-300 animate-pulse" />
+              <div className="flex gap-2.5 items-center text-slate-500 text-xs font-mono">
+                <div className="w-7 h-7 rounded-md bg-purple-500/20 border border-purple-500/40 flex items-center justify-center">
+                  <Bot className="w-3.5 h-3.5 text-purple-600 dark:text-purple-300 animate-pulse" />
                 </div>
-                <div className="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-800">
-                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-bounce" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:0.2s]" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce [animation-delay:0.4s]" />
-                  <span className="ml-2 text-slate-400">NOVA AI reasoning...</span>
+                <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-950 px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-800">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-bounce" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-bounce [animation-delay:0.2s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.4s]" />
+                  <span className="ml-2 text-slate-500 text-[11px]">NOVA AI reasoning...</span>
                 </div>
               </div>
             )}
@@ -365,21 +348,21 @@ export const NovaAiSection: React.FC = () => {
           {/* Interactive Chat Input Form */}
           <form
             onSubmit={handleSendMessage}
-            className="p-4 bg-slate-950 border-t border-slate-800 flex items-center gap-3"
+            className="p-3 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2.5"
           >
             <input
               type="text"
               value={customInput}
               onChange={(e) => setCustomInput(e.target.value)}
               placeholder="Ask NOVA AI anything about African currency rails, liquidity buffers, or counterparty settlement..."
-              className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-purple-500"
+              className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md px-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-purple-500"
             />
             <button
               type="submit"
               disabled={!customInput.trim() || isTyping}
-              className="p-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white transition-all shadow-md active:scale-95 flex items-center justify-center"
+              className="p-2 rounded-md bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white transition-all shadow-sm active:scale-95 flex items-center justify-center"
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-3.5 h-3.5" />
             </button>
           </form>
 

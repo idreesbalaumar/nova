@@ -24,18 +24,15 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060A12] text-slate-100 flex flex-col font-sans selection:bg-emerald-500/20 selection:text-emerald-300">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#060A12] dark:text-slate-100 flex flex-col font-sans selection:bg-emerald-500/20 selection:text-emerald-700 dark:selection:text-emerald-300 transition-colors duration-200">
       {/* Toast Notifications */}
       <Toaster 
         position="top-right" 
         richColors 
         closeButton
-        theme="dark"
         toastOptions={{
           style: {
-            background: '#0B132B',
-            borderColor: 'rgba(255, 255, 255, 0.1)',
-            color: '#fff',
+            borderRadius: '6px',
             fontFamily: "'Plus Jakarta Sans', sans-serif",
           },
         }}
