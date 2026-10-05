@@ -6,12 +6,16 @@ interface NavbarProps {
   onOpenSandbox: () => void;
   onOpenLogin?: () => void;
   onOpenRegister?: () => void;
+  isLoggedIn?: boolean;
+  onOpenDashboard?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   onOpenSandbox,
   onOpenLogin,
   onOpenRegister,
+  isLoggedIn = false,
+  onOpenDashboard,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDark, setIsDark] = useState(false); // Light mode default
@@ -140,36 +144,50 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </button>
 
-            {/* Sign In Button */}
-            {onOpenLogin && (
+            {/* If logged in, show Dashboard Console button */}
+            {isLoggedIn && onOpenDashboard ? (
               <button
-                onClick={onOpenLogin}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-amber-800 dark:hover:text-white hover:bg-amber-50/80 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-              >
-                <Icon icon="solar:login-2-linear" className="w-3.5 h-3.5" />
-                <span>Sign In</span>
-              </button>
-            )}
-
-            {/* Open Account CTA */}
-            {onOpenRegister ? (
-              <button
-                onClick={onOpenRegister}
+                onClick={onOpenDashboard}
                 className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
               >
-                <Icon icon="solar:user-plus-bold" className="w-3.5 h-3.5" />
-                <span>Open Account</span>
+                <Icon icon="solar:widget-bold" className="w-3.5 h-3.5" />
+                <span>Console</span>
                 <Icon icon="solar:alt-arrow-right-linear" className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
               </button>
             ) : (
-              <button
-                onClick={onOpenSandbox}
-                className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
-              >
-                <Icon icon="solar:code-square-bold" className="w-3.5 h-3.5" />
-                <span>Sandbox Console</span>
-                <Icon icon="solar:alt-arrow-right-linear" className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-              </button>
+              <>
+                {/* Sign In Button */}
+                {onOpenLogin && (
+                  <button
+                    onClick={onOpenLogin}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-amber-800 dark:hover:text-white hover:bg-amber-50/80 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  >
+                    <Icon icon="solar:login-2-linear" className="w-3.5 h-3.5" />
+                    <span>Sign In</span>
+                  </button>
+                )}
+
+                {/* Open Account CTA */}
+                {onOpenRegister ? (
+                  <button
+                    onClick={onOpenRegister}
+                    className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
+                  >
+                    <Icon icon="solar:user-plus-bold" className="w-3.5 h-3.5" />
+                    <span>Open Account</span>
+                    <Icon icon="solar:alt-arrow-right-linear" className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={onOpenSandbox}
+                    className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
+                  >
+                    <Icon icon="solar:code-square-bold" className="w-3.5 h-3.5" />
+                    <span>Sandbox Console</span>
+                    <Icon icon="solar:alt-arrow-right-linear" className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                  </button>
+                )}
+              </>
             )}
 
             {/* Developer Sandbox Icon Button */}

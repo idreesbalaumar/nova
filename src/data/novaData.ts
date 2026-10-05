@@ -136,6 +136,23 @@ export const NETWORK_NODES: NetworkNode[] = [
     connections: ['lagos', 'nairobi', 'accra', 'johannesburg'],
     activePairs: ['GBP/NGN', 'GBP/KES', 'USD/NGN', 'EUR/GHS'],
   },
+  {
+    id: 'cairo',
+    name: 'Cairo North Africa Rail',
+    city: 'Cairo',
+    country: 'Egypt',
+    flag: '🇪🇬',
+    type: 'North Africa & MENA Gateway',
+    tps: '11,200 TPS',
+    latency: '34ms',
+    reserves: '$145.0M',
+    status: 'optimal',
+    description: 'Bilateral settlement bridge connecting North Africa and Arabian Gulf liquidity corridors into West & East Africa.',
+    xPercent: 62,
+    yPercent: 20,
+    connections: ['lagos', 'nairobi', 'london'],
+    activePairs: ['EGP/NGN', 'EGP/USD', 'EGP/KES'],
+  },
 ];
 
 export interface Transaction {
@@ -151,11 +168,16 @@ export interface Transaction {
   sourceCurrency: string;
   settledAmount: string;
   settledCurrency: string;
+  targetAmount?: string;
+  targetCurrency?: string;
   fxRate: string;
   status: 'settled' | 'clearing' | 'in_flight';
   latencyMs: number;
   hash: string;
   feeSaved: string;
+  route?: string[];
+  merkleProof?: string;
+  complianceStatus?: 'verified' | 'flagged' | 'pending';
 }
 
 export const RECENT_TRANSACTIONS: Transaction[] = [

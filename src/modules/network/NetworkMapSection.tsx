@@ -43,6 +43,9 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
     { from: 'london', to: 'lagos', color: '#10B981', label: 'GBP/NGN' },
     { from: 'london', to: 'nairobi', color: '#0EA5E9', label: 'GBP/KES' },
     { from: 'london', to: 'accra', color: '#F59E0B', label: 'EUR/GHS' },
+    { from: 'london', to: 'cairo', color: '#F59E0B', label: 'GBP/EGP' },
+    { from: 'cairo', to: 'lagos', color: '#10B981', label: 'EGP/NGN' },
+    { from: 'cairo', to: 'nairobi', color: '#0EA5E9', label: 'EGP/KES' },
     { from: 'lagos', to: 'abuja', color: '#10B981', label: 'NGN Sovereign' },
     { from: 'lagos', to: 'accra', color: '#10B981', label: 'NGN/GHS' },
     { from: 'lagos', to: 'nairobi', color: '#0EA5E9', label: 'NGN/KES' },
@@ -145,11 +148,27 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
 
               <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 800 450">
                 <defs>
-                  <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#10B981" stopOpacity="0.8" />
-                    <stop offset="50%" stopColor="#0EA5E9" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.8" />
+                  <linearGradient id="africaMeshGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#10B981" stopOpacity="0.14" />
+                    <stop offset="45%" stopColor="#0EA5E9" stopOpacity="0.10" />
+                    <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.12" />
                   </linearGradient>
+
+                  <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#10B981" stopOpacity="0.9" />
+                    <stop offset="50%" stopColor="#0EA5E9" stopOpacity="0.9" />
+                    <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.9" />
+                  </linearGradient>
+
+                  <radialGradient id="lagosPulseGrad" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#10B981" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#10B981" stopOpacity="0" />
+                  </radialGradient>
+
+                  <radialGradient id="nairobiPulseGrad" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#0EA5E9" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#0EA5E9" stopOpacity="0.2" />
+                  </radialGradient>
 
                   <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                     <feGaussianBlur stdDeviation="2.5" result="blur" />
@@ -158,9 +177,17 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
                       <feMergeNode in="SourceGraphic" />
                     </feMerge>
                   </filter>
+
+                  <filter id="shadowFilter" x="-10%" y="-10%" width="120%" height="120%">
+                    <feGaussianBlur stdDeviation="6" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
                 </defs>
 
-                {/* Stylized Grid Background */}
+                {/* Coordinate Grid Background */}
                 <g className="opacity-10 dark:opacity-20">
                   {[...Array(12)].map((_, i) => (
                     <line key={`v-${i}`} x1={i * 70} y1="0" x2={i * 70} y2="450" stroke="#0EA5E9" strokeWidth="0.5" strokeDasharray="3 3" />
@@ -170,17 +197,70 @@ export const NetworkMapSection: React.FC<NetworkMapSectionProps> = ({
                   ))}
                 </g>
 
-                {/* Continental silhouette hints */}
-                <path
-                  d="M 310 50 Q 340 70 370 60 Q 400 90 350 110 Q 300 80 310 50 Z"
-                  className="fill-slate-100 dark:fill-white/5 stroke-slate-300 dark:stroke-white/10"
-                  strokeWidth="1"
-                />
-                <path
-                  d="M 270 140 Q 380 130 460 160 Q 550 200 520 280 Q 480 380 410 420 Q 380 380 360 300 Q 250 240 270 140 Z"
-                  className="fill-emerald-50/60 dark:fill-emerald-500/5 stroke-emerald-300 dark:stroke-emerald-500/20"
-                  strokeWidth="1.2"
-                />
+                {/* Equatorial & Tropic Reference Lines */}
+                <line x1="160" y1="225" x2="680" y2="225" stroke="#10B981" strokeWidth="0.75" strokeDasharray="4 6" opacity="0.3" />
+                <text x="170" y="220" fill="#10B981" fontSize="8" opacity="0.6" fontFamily="monospace">0° EQUATOR</text>
+                <text x="170" y="105" fill="#F59E0B" fontSize="8" opacity="0.5" fontFamily="monospace">23.5° N TROPIC OF CANCER</text>
+                <text x="170" y="345" fill="#0EA5E9" fontSize="8" opacity="0.5" fontFamily="monospace">23.5° S TROPIC OF CAPRICORN</text>
+
+                {/* Concentric Regional Coverage Rings (Lagos & Nairobi) */}
+                <circle cx="352" cy="216" r="55" fill="url(#lagosPulseGrad)" />
+                <circle cx="352" cy="216" r="105" fill="none" stroke="#10B981" strokeWidth="0.75" strokeDasharray="3 4" opacity="0.35" />
+                <circle cx="496" cy="234" r="45" fill="url(#nairobiPulseGrad)" />
+                <circle cx="496" cy="234" r="85" fill="none" stroke="#0EA5E9" strokeWidth="0.75" strokeDasharray="3 4" opacity="0.3" />
+
+                {/* Focused African Continent Silhouette */}
+                <g filter="url(#shadowFilter)">
+                  {/* African Continental Landmass */}
+                  <path
+                    d="M 270 70 
+                       C 320 60, 395 55, 465 75 
+                       C 515 90, 560 110, 555 130 
+                       C 550 145, 580 152, 620 165 
+                       C 645 180, 635 200, 600 215 
+                       C 580 225, 565 235, 550 258 
+                       C 538 280, 530 315, 520 350 
+                       C 505 390, 480 435, 455 455 
+                       C 430 472, 405 468, 390 450 
+                       C 378 430, 385 390, 378 360 
+                       C 368 335, 340 315, 345 288 
+                       C 350 265, 310 260, 275 255 
+                       C 240 248, 208 225, 215 190 
+                       C 222 155, 250 120, 260 95 
+                       C 268 80, 265 72, 270 70 Z"
+                    fill="url(#africaMeshGrad)"
+                    stroke="currentColor"
+                    className="text-emerald-500/40 dark:text-emerald-400/50"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+
+                  {/* Madagascar Island */}
+                  <path
+                    d="M 555 330 C 565 310, 585 322, 580 355 C 576 385, 560 415, 550 410 C 542 400, 546 355, 555 330 Z"
+                    fill="url(#africaMeshGrad)"
+                    stroke="currentColor"
+                    className="text-emerald-500/40 dark:text-emerald-400/50"
+                    strokeWidth="1.2"
+                  />
+
+                  {/* Great African Rift Valley Line */}
+                  <path
+                    d="M 515 90 Q 500 160 496 234 Q 480 290 455 350"
+                    fill="none"
+                    stroke="#F59E0B"
+                    strokeWidth="1.2"
+                    strokeDasharray="2 4"
+                    opacity="0.6"
+                  />
+
+                  {/* Offshore British Isles (London Gateway at Top) */}
+                  <path
+                    d="M 330 35 C 342 30, 350 42, 345 58 C 340 70, 325 68, 330 35 Z"
+                    className="fill-slate-100 dark:fill-white/10 stroke-slate-400 dark:stroke-white/20"
+                    strokeWidth="1"
+                  />
+                </g>
 
                 {/* Active Dynamic Corridors Arcs */}
                 {connections.map((conn, idx) => {

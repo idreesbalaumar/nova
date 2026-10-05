@@ -9,7 +9,7 @@ import heroCenter from '@/assets/hero_center.jpg';
 interface LoginPageProps {
   onNavigateHome: () => void;
   onNavigateRegister: () => void;
-  onLoginSuccess?: (user: { name: string; email: string }) => void;
+  onLoginSuccess?: (user: { name: string; email: string; organization?: string; role?: string }) => void;
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({
@@ -90,11 +90,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({
       setTimeout(() => {
         if (onLoginSuccess) {
           onLoginSuccess({
-            name: email.split('@')[0],
+            name: email.includes('merchant') || email.includes('demo') ? 'Amara Okonkwo' : email.split('@')[0],
             email,
+            organization: 'Afrigate Commerce Ltd',
+            role: 'Head of Global Treasury',
           });
+        } else {
+          onNavigateHome();
         }
-        onNavigateHome();
       }, 700);
     }, 1000);
   };

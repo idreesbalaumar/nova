@@ -12,19 +12,51 @@ import { SandboxModal } from '@/modules/shared/components/SandboxModal';
 import { RouteSpinner } from '@/modules/shared/components/RouteSpinner';
 import { LoginPage } from '@/modules/auth/LoginPage';
 import { RegisterPage } from '@/modules/auth/RegisterPage';
+import { DashboardLayout } from '@/modules/dashboard/DashboardLayout';
+import { DashboardPage } from '@/modules/dashboard/DashboardPage';
 import { Transaction } from '@/data/novaData';
 import { Toaster, toast } from 'sonner';
 
-export type AppRoute = 'home' | 'login' | 'register';
+export type AppRoute = 'home' | 'login' | 'register' | 'dashboard';
+
+export interface AuthUser {
+  name: string;
+  email: string;
+  organization?: string;
+  role?: string;
+}
+
+const DEFAULT_DEMO_USER: AuthUser = {
+  name: 'Amara Okonkwo',
+  email: 'operations@afrigate-commerce.africa',
+  organization: 'Afrigate Commerce Ltd',
+  role: 'Head of Global Treasury',
+};
 
 export default function App() {
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isSandboxOpen, setIsSandboxOpen] = useState<boolean>(false);
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
+
+  // Authenticated User State (saved in localStorage for persistent session)
+  const [authUser, setAuthUser] = useState<AuthUser | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const saved = localStorage.getItem('nova_auth_user');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  });
+
   const [activeRoute, setActiveRoute] = useState<AppRoute>(() => {
     if (typeof window === 'undefined') return 'home';
     const path = window.location.pathname.toLowerCase();
     const hash = window.location.hash.toLowerCase();
+    if (path.includes('/dashboard') || hash === '#dashboard') return 'dashboard';
     if (path.includes('/login') || hash === '#login') return 'login';
     if (path.includes('/register') || hash === '#register') return 'register';
     return 'home';
@@ -45,7 +77,9 @@ export default function App() {
     const handleLocationChange = () => {
       const path = window.location.pathname.toLowerCase();
       const hash = window.location.hash.toLowerCase();
-      if (path.includes('/login') || hash === '#login') {
+      if (path.includes('/dashboard') || hash === '#dashboard') {
+        setActiveRoute('dashboard');
+      } else if (path.includes('/login') || hash === '#login') {
         setActiveRoute('login');
       } else if (path.includes('/register') || hash === '#register') {
         setActiveRoute('register');
@@ -78,6 +112,13 @@ export default function App() {
     }
   };
 
+  const handleSignOut = () => {
+    setAuthUser(null);
+    localStorage.removeItem('nova_auth_user');
+    toast.info('Signed out of NOVA workspace.');
+    navigateTo('home');
+  };
+
   if (isInitialLoading) {
     return <RouteSpinner fullScreen={true} />;
   }
@@ -91,20 +132,40 @@ export default function App() {
         closeButton
         toastOptions={{
           style: {
-            borderRadius: '10px',
+            borderRadius: '12px',
             fontFamily: "'Plus Jakarta Sans', sans-serif",
           },
         }}
       />
 
       {/* Conditional Rendering Based on Route */}
-      {activeRoute === 'login' ? (
+      {activeRoute === 'dashboard' ? (
+        <DashboardLayout
+          user={authUser || DEFAULT_DEMO_USER}
+          onSignOut={handleSignOut}
+          onNavigateHome={() => navigateTo('home')}
+        >
+          <DashboardPage
+            user={authUser || DEFAULT_DEMO_USER}
+            onSelectTransaction={(tx) => setSelectedTransaction(tx)}
+            onOpenSandbox={() => setIsSandboxOpen(true)}
+          />
+        </DashboardLayout>
+      ) : activeRoute === 'login' ? (
         <LoginPage
           onNavigateHome={() => navigateTo('home')}
           onNavigateRegister={() => navigateTo('register')}
           onLoginSuccess={(user) => {
-            toast.success(`Welcome back, ${user.name}! Connected to NOVA network.`);
-            navigateTo('home');
+            const loggedInUser: AuthUser = {
+              name: user.name || 'Amara Okonkwo',
+              email: user.email,
+              organization: (user as any).organization || 'Afrigate Commerce Ltd',
+              role: (user as any).role || 'Head of Global Treasury',
+            };
+            setAuthUser(loggedInUser);
+            localStorage.setItem('nova_auth_user', JSON.stringify(loggedInUser));
+            toast.success(`Welcome back, ${loggedInUser.name}! Connected to NOVA network.`);
+            navigateTo('dashboard');
           }}
         />
       ) : activeRoute === 'register' ? (
@@ -112,8 +173,16 @@ export default function App() {
           onNavigateHome={() => navigateTo('home')}
           onNavigateLogin={() => navigateTo('login')}
           onRegisterSuccess={(data) => {
-            toast.success(`Account registered for ${data.businessName}! Welcome to NOVA.`);
-            navigateTo('home');
+            const registeredUser: AuthUser = {
+              name: data.name || `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'Amina Adeyemi',
+              email: data.email || 'operations@afrigate-logistics.africa',
+              organization: data.businessName || 'Afrigate Logistics Ltd',
+              role: 'Lead Administrator',
+            };
+            setAuthUser(registeredUser);
+            localStorage.setItem('nova_auth_user', JSON.stringify(registeredUser));
+            toast.success(`Account registered for ${registeredUser.organization}! Welcome to NOVA.`);
+            navigateTo('dashboard');
           }}
         />
       ) : (
@@ -123,6 +192,8 @@ export default function App() {
             onOpenSandbox={() => setIsSandboxOpen(true)}
             onOpenLogin={() => navigateTo('login')}
             onOpenRegister={() => navigateTo('register')}
+            isLoggedIn={!!authUser}
+            onOpenDashboard={() => navigateTo('dashboard')}
           />
 
           {/* Main Page Layout */}
@@ -131,10 +202,10 @@ export default function App() {
             <HeroSection 
               onOpenSandbox={() => setIsSandboxOpen(true)}
               onExploreNetwork={handleExploreNetwork}
-              onOpenRegister={() => navigateTo('register')}
+              onOpenRegister={() => navigateTo(authUser ? 'dashboard' : 'register')}
             />
 
-            {/* 2. African Financial Network */}
+            {/* 2. African Financial Network (Focused on Africa) */}
             <NetworkMapSection 
               onSelectTransaction={(tx) => setSelectedTransaction(tx)}
             />
@@ -153,7 +224,7 @@ export default function App() {
             {/* 6. Final CTA & Developer Sandbox */}
             <FinalCtaSection 
               onOpenSandbox={() => setIsSandboxOpen(true)}
-              onOpenRegister={() => navigateTo('register')}
+              onOpenRegister={() => navigateTo(authUser ? 'dashboard' : 'register')}
             />
           </main>
 
@@ -174,6 +245,14 @@ export default function App() {
             onClose={() => setIsSandboxOpen(false)}
           />
         </>
+      )}
+
+      {/* Global Receipt Modal available in Dashboard and Landing Page */}
+      {activeRoute === 'dashboard' && (
+        <ReceiptModal 
+          transaction={selectedTransaction}
+          onClose={() => setSelectedTransaction(null)}
+        />
       )}
     </div>
   );
