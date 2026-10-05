@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Transaction } from '@/data/novaData';
 import { Icon } from '@iconify/react';
 import { toast } from 'sonner';
@@ -9,7 +10,34 @@ interface ReceiptModalProps {
 }
 
 export const ReceiptModal: React.FC<ReceiptModalProps> = ({ transaction, onClose }) => {
-  if (!transaction) return null;
+  // Lock body scroll when modal is active
+  useEffect(() => {
+    if (transaction) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [transaction]);
+
+  // Handle escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (transaction) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [transaction, onClose]);
+
+  if (!transaction || typeof document === 'undefined') return null;
 
   const handleCopyHash = () => {
     navigator.clipboard.writeText(transaction.hash);
@@ -22,10 +50,17 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ transaction, onClose
     });
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+      {/* Full-screen Backdrop covering header, footer and entire screen */}
       <div 
-        className="relative w-full max-w-lg rounded-xl bg-[#FFFDF9] dark:bg-[#080D1A] border border-amber-500/20 dark:border-white/10 shadow-2xl p-5 sm:p-7 overflow-hidden text-slate-800 dark:text-slate-200"
+        className="fixed inset-0 bg-slate-950/75 dark:bg-black/85 backdrop-blur-md transition-opacity"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      <div 
+        className="relative z-10 w-full max-w-lg rounded-xl bg-[#FFFDF9] dark:bg-[#080D1A] border border-amber-500/20 dark:border-white/10 shadow-2xl p-5 sm:p-7 overflow-hidden text-slate-800 dark:text-slate-200 my-auto animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Background glow */}
@@ -137,7 +172,8 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ transaction, onClose
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

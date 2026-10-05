@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { Icon } from '@iconify/react';
 import { Logo } from '@/modules/shared/components/Logo';
@@ -576,9 +577,22 @@ export const LoginPage: React.FC<LoginPageProps> = ({
       </motion.div>
 
       {/* Forgot Password Modal */}
-      {forgotPasswordOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
+      {forgotPasswordOpen && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+          {/* Full-screen Backdrop */}
+          <div
+            className="fixed inset-0 bg-slate-950/75 dark:bg-black/85 backdrop-blur-md transition-opacity"
+            onClick={() => {
+              setForgotPasswordOpen(false);
+              setForgotSent(false);
+            }}
+            aria-hidden="true"
+          />
+
+          <div 
+            className="relative z-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl my-auto animate-in fade-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               onClick={() => {
                 setForgotPasswordOpen(false);
@@ -635,7 +649,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({
               </form>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

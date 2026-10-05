@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Icon } from '@iconify/react';
 import { cn } from '@/modules/shared/utils/cn';
 import { Transaction } from '@/data/novaData';
@@ -48,7 +49,34 @@ export const NewTransferModal: React.FC<NewTransferModalProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [settlementStep, setSettlementStep] = useState<string>('');
 
-  if (!isOpen) return null;
+  // Lock body scroll when modal is active
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  // Handle escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isProcessing) {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, isProcessing, onClose]);
+
+  if (!isOpen || typeof document === 'undefined') return null;
 
   const sourceOption = SOURCE_CURRENCIES.find((c) => c.code === sourceCode) || SOURCE_CURRENCIES[0];
   const destOption = DEST_CURRENCIES.find((c) => c.code === destCode) || DEST_CURRENCIES[0];
@@ -106,9 +134,19 @@ export const NewTransferModal: React.FC<NewTransferModalProps> = ({
     }, 850);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-2xl relative overflow-hidden">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+      {/* Full-screen Backdrop covering header, footer and entire screen */}
+      <div
+        className="fixed inset-0 bg-slate-950/75 dark:bg-black/85 backdrop-blur-md transition-opacity"
+        onClick={() => !isProcessing && onClose()}
+        aria-hidden="true"
+      />
+
+      <div
+        className="relative z-10 w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-2xl my-auto overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-3">
@@ -278,7 +316,8 @@ export const NewTransferModal: React.FC<NewTransferModalProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

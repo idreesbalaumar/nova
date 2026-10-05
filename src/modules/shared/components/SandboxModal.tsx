@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Icon } from '@iconify/react';
 import { toast } from 'sonner';
 
@@ -8,7 +9,34 @@ interface SandboxModalProps {
 }
 
 export const SandboxModal: React.FC<SandboxModalProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+  // Lock body scroll when modal is active
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  // Handle escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen || typeof document === 'undefined') return null;
 
   const [endpoint, setEndpoint] = useState<'create_settlement' | 'check_liquidity' | 'simulate_ai_hedge'>('create_settlement');
   const [currency, setCurrency] = useState('GBP');
@@ -85,10 +113,17 @@ export const SandboxModal: React.FC<SandboxModalProps> = ({ isOpen, onClose }) =
     setTimeout(() => setCopied(false), 2000);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+      {/* Full-screen Backdrop covering header, footer and entire screen */}
       <div 
-        className="relative w-full max-w-3xl rounded-xl bg-white dark:bg-[#080D1A] border border-slate-200 dark:border-white/10 shadow-2xl p-5 sm:p-7 overflow-hidden text-slate-800 dark:text-slate-200"
+        className="fixed inset-0 bg-slate-950/75 dark:bg-black/85 backdrop-blur-md transition-opacity"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      <div 
+        className="relative z-10 w-full max-w-3xl rounded-xl bg-white dark:bg-[#080D1A] border border-slate-200 dark:border-white/10 shadow-2xl p-5 sm:p-7 overflow-hidden text-slate-800 dark:text-slate-200 my-auto animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Background glow */}
@@ -265,6 +300,7 @@ export const SandboxModal: React.FC<SandboxModalProps> = ({ isOpen, onClose }) =
         </div>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

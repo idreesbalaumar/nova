@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Icon } from '@iconify/react';
-import { cn } from '@/modules/shared/utils/cn';
 import { RECENT_TRANSACTIONS, Transaction } from '@/data/novaData';
-import { NewTransferModal } from './components/NewTransferModal';
-import { DashboardTab } from './DashboardLayout';
+import { cn } from '@/modules/shared/utils/cn';
+import { Icon } from '@iconify/react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
-  AreaChart,
   Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
 } from 'recharts';
 import { toast } from 'sonner';
+import { NewTransferModal } from './components/NewTransferModal';
+import { DashboardTab } from './DashboardLayout';
 
 export interface DashboardPageProps {
   user: {
@@ -308,10 +308,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
     timeframe === '24h'
       ? CHART_DATA_24H
       : timeframe === '7d'
-      ? CHART_DATA_7D
-      : timeframe === '30d'
-      ? CHART_DATA_30D
-      : CHART_DATA_90D;
+        ? CHART_DATA_7D
+        : timeframe === '30d'
+          ? CHART_DATA_30D
+          : CHART_DATA_90D;
 
   const totalInflowInPeriod = useMemo(
     () => chartData.reduce((acc, curr) => acc + curr.inflow, 0),
@@ -344,10 +344,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-semibold text-amber-300 mb-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                <span>Pan-African Mesh Active • 28ms Avg Latency</span>
-              </div>
               <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
                 Welcome back, {user.name} 👋🏾
               </h2>
