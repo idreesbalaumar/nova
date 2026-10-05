@@ -193,6 +193,8 @@ export default function App() {
             onOpenLogin={() => navigateTo('login')}
             onOpenRegister={() => navigateTo('register')}
             isLoggedIn={!!authUser}
+            user={authUser}
+            onSignOut={handleSignOut}
             onOpenDashboard={() => navigateTo('dashboard')}
           />
 

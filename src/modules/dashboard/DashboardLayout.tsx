@@ -25,6 +25,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'settlements' | 'corridors' | 'wallets' | 'insights'>('dashboard');
   const [isDark, setIsDark] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Sync theme
   useEffect(() => {
@@ -54,11 +55,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col font-sans transition-colors duration-300">
       {/* ── Top Sticky Header (Directly modeled after Trackforte Franchise Layout) ── */}
-      <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm transition-all">
+      <header className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between gap-4">
             {/* Logo */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <Logo
                 variant="full"
                 size="sm"
@@ -68,8 +69,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               />
 
               {/* Environment Tag */}
-              <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 font-mono tracking-tight">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 MAINNET LIVE
               </span>
             </div>
@@ -95,14 +96,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
             {/* Right Profile & Actions */}
             <div className="flex items-center gap-2">
-              {/* Mesh Telemetry Pill */}
-              <div className="hidden md:flex items-center gap-2 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-mono">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                <span className="text-[11px]">
-                  <strong>24,891</strong> TPS
-                </span>
-              </div>
-
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
@@ -128,9 +121,48 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 onSignOut={onSignOut}
                 onNavigateHome={onNavigateHome}
               />
+
+              {/* Mobile hamburger menu */}
+              <div className="lg:hidden ml-1">
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 cursor-pointer"
+                  aria-label="Toggle dashboard menu"
+                >
+                  {mobileMenuOpen ? (
+                    <Icon icon="solar:close-circle-linear" className="w-5 h-5 text-amber-600" />
+                  ) : (
+                    <Icon icon="solar:hamburger-menu-linear" className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Mobile Navigation Drawer */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl px-4 py-3 space-y-1 animate-in fade-in slide-in-from-top-2">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveTab(item.id as any);
+                  setMobileMenuOpen(false);
+                }}
+                className={cn(
+                  'w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all text-left',
+                  activeTab === item.id
+                    ? 'bg-amber-50 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300 border border-amber-200 dark:border-amber-700/60'
+                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                )}
+              >
+                <Icon icon={item.icon} className="w-4 h-4" />
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </header>
 
       {/* ── Main Content Area with Breadcrumbs ── */}

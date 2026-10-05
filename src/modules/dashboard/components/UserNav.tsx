@@ -11,6 +11,7 @@ export interface UserNavProps {
   };
   onSignOut: () => void;
   onNavigateHome: () => void;
+  onNavigateDashboard?: () => void;
   className?: string;
 }
 
@@ -18,6 +19,7 @@ export const UserNav: React.FC<UserNavProps> = ({
   user,
   onSignOut,
   onNavigateHome,
+  onNavigateDashboard,
   className,
 }) => {
   const [open, setOpen] = useState(false);
@@ -87,7 +89,10 @@ export const UserNav: React.FC<UserNavProps> = ({
             {/* Menu Links */}
             <div className="py-1.5 space-y-0.5">
               <button
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  if (onNavigateDashboard) onNavigateDashboard();
+                }}
                 className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left cursor-pointer"
               >
                 <Icon icon="solar:widget-bold-duotone" className="w-4 h-4 text-amber-500" />
@@ -95,7 +100,10 @@ export const UserNav: React.FC<UserNavProps> = ({
               </button>
 
               <button
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  if (onNavigateDashboard) onNavigateDashboard();
+                }}
                 className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left cursor-pointer"
               >
                 <Icon icon="solar:routing-2-bold-duotone" className="w-4 h-4 text-emerald-500" />
@@ -103,7 +111,10 @@ export const UserNav: React.FC<UserNavProps> = ({
               </button>
 
               <button
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  if (onNavigateDashboard) onNavigateDashboard();
+                }}
                 className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left cursor-pointer"
               >
                 <Icon icon="solar:wallet-money-bold-duotone" className="w-4 h-4 text-cyan-500" />
@@ -118,7 +129,7 @@ export const UserNav: React.FC<UserNavProps> = ({
                 className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left cursor-pointer"
               >
                 <Icon icon="solar:global-bold-duotone" className="w-4 h-4 text-indigo-500" />
-                <span>Switch to Public Website</span>
+                <span>Public Website</span>
               </button>
             </div>
 

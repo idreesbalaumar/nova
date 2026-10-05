@@ -325,10 +325,6 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
           {/* Stepper Navigation */}
           <div className="flex-1 flex flex-col justify-center px-8">
             <div className="mb-8">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-semibold mb-2">
-                <Icon icon="solar:shield-check-bold" className="w-3.5 h-3.5" />
-                <span>Instant Merchant Onboarding</span>
-              </div>
               <h1 className="text-xl xl:text-2xl font-bold text-white tracking-tight">
                 Enterprise Registration
               </h1>
@@ -514,7 +510,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                     <Icon icon="solar:buildings-2-bold-duotone" className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                       Business{' '}
                       <span className="bg-gradient-to-r from-amber-600 via-amber-500 to-emerald-600 bg-clip-text text-transparent">
                         Profile
@@ -650,7 +646,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                     <Icon icon="solar:letter-bold-duotone" className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                       Work Email &{' '}
                       <span className="bg-gradient-to-r from-amber-600 via-amber-500 to-emerald-600 bg-clip-text text-transparent">
                         Security OTP
@@ -830,7 +826,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                     <Icon icon="solar:shield-user-bold-duotone" className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                       Admin &{' '}
                       <span className="bg-gradient-to-r from-amber-600 via-amber-500 to-emerald-600 bg-clip-text text-transparent">
                         Settlement Rails
@@ -1022,7 +1018,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                     <Icon icon="solar:verified-check-bold-duotone" className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                       Review &{' '}
                       <span className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 bg-clip-text text-transparent">
                         Activate
